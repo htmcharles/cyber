@@ -22,15 +22,30 @@ import concurrent.futures
 import ipaddress
 import struct
 from typing import Dict, List, Optional
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 
-# Setup logging
-logging.basicConfig(
-    filename='network_scan.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+# Create logs directory if it doesn't exist
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+# Configure logging with rotation
+log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+log_handler = RotatingFileHandler(
+    'logs/network_scan.log',
+    maxBytes=1024 * 1024,  # 1MB
+    backupCount=5
 )
+log_handler.setFormatter(log_formatter)
+logger = logging.getLogger('NetworkScanner')
+logger.setLevel(logging.INFO)
+logger.addHandler(log_handler)
+
+# Add console handler for development
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(log_formatter)
+logger.addHandler(console_handler)
 
 # Global variables for installation status
 INSTALLED_PACKAGES = set()
@@ -91,9 +106,9 @@ def check_and_install_requirements():
             try:
                 subprocess.check_call([sys.executable, "-m", "pip", "install", package])
                 INSTALLED_PACKAGES.add(package)
-                logging.info(f"Installed package: {package}")
+                logger.info(f"Installed package: {package}")
             except Exception as e:
-                logging.error(f"Failed to install {package}: {str(e)}")
+                logger.error(f"Failed to install {package}: {str(e)}")
                 return {
                     "success": False,
                     "message": f"Failed to install {package}: {str(e)}"
@@ -129,7 +144,7 @@ def check_anonymity():
             "connection_type": "VPN/Proxy" if is_anonymous else "Direct Connection"
         }
     except Exception as e:
-        logging.error(f"Anonymity check failed: {str(e)}")
+        logger.error(f"Anonymity check failed: {str(e)}")
         return {"error": str(e)}
 
 def scan_port(ip: str, port: int, timeout: float = 1.0) -> Optional[Dict]:
@@ -284,7 +299,7 @@ def scan_network_range(network_range: str) -> Dict:
 
         return scan_results
     except Exception as e:
-        logging.error(f"Network scan failed: {str(e)}")
+        logger.error(f"Network scan failed: {str(e)}")
         return {"error": str(e)}
 
 def scan_vulnerabilities(target: str) -> Dict:
@@ -335,7 +350,7 @@ def scan_vulnerabilities(target: str) -> Dict:
 
         return vulnerabilities
     except Exception as e:
-        logging.error(f"Vulnerability scan failed: {str(e)}")
+        logger.error(f"Vulnerability scan failed: {str(e)}")
         return {"error": str(e)}
 
 def ssh_connect(hostname, username, password=None, key_filename=None):
@@ -365,7 +380,7 @@ def ssh_connect(hostname, username, password=None, key_filename=None):
         ssh.close()
         return results
     except Exception as e:
-        logging.error(f"SSH connection failed: {str(e)}")
+        logger.error(f"SSH connection failed: {str(e)}")
         return {"error": str(e)}
 
 def save_scan_results(results, filename=None):
@@ -377,10 +392,10 @@ def save_scan_results(results, filename=None):
         with open(filename, 'w') as f:
             json.dump(results, f, indent=4)
 
-        logging.info(f"Scan results saved to {filename}")
+        logger.info(f"Scan results saved to {filename}")
         return {"status": "success", "filename": filename}
     except Exception as e:
-        logging.error(f"Failed to save scan results: {str(e)}")
+        logger.error(f"Failed to save scan results: {str(e)}")
         return {"error": str(e)}
 
 def get_local_ip():
@@ -507,7 +522,7 @@ def discover_network_hosts():
 
         return hosts
     except Exception as e:
-        logging.error(f"Network discovery failed: {str(e)}")
+        logger.error(f"Network discovery failed: {str(e)}")
         return []
 
 def simulate_network_attack(attack_type, target_ip):
@@ -520,7 +535,7 @@ def simulate_network_attack(attack_type, target_ip):
         start_time = time.time()
 
         # Log attack initiation
-        logging.info(f"Starting {attack_info['name']} on target {target_ip}")
+        logger.info(f"Starting {attack_info['name']} on target {target_ip}")
 
         # Simulate attack (using safe commands for testing)
         if attack_type == "ping_flood":
@@ -539,7 +554,7 @@ def simulate_network_attack(attack_type, target_ip):
         duration = time.time() - start_time
 
         # Log attack completion
-        logging.info(f"Completed {attack_info['name']} on {target_ip}. Duration: {duration:.2f}s")
+        logger.info(f"Completed {attack_info['name']} on {target_ip}. Duration: {duration:.2f}s")
 
         return {
             "attack_type": attack_type,
@@ -549,7 +564,7 @@ def simulate_network_attack(attack_type, target_ip):
             "status": "completed"
         }
     except Exception as e:
-        logging.error(f"Attack simulation failed: {str(e)}")
+        logger.error(f"Attack simulation failed: {str(e)}")
         return {"error": str(e)}
 
 def get_random_attack():
@@ -560,7 +575,7 @@ def create_scan_directory():
     """Create directory for storing scan results if it doesn't exist."""
     if not os.path.exists(SCAN_RESULTS_DIR):
         os.makedirs(SCAN_RESULTS_DIR)
-        logging.info(f"Created scan results directory: {SCAN_RESULTS_DIR}")
+        logger.info(f"Created scan results directory: {SCAN_RESULTS_DIR}")
 
 def generate_scan_report(scan_results, vuln_results):
     """Generate a comprehensive scan report."""
@@ -583,7 +598,7 @@ def generate_scan_report(scan_results, vuln_results):
 
         return report
     except Exception as e:
-        logging.error(f"Report generation failed: {str(e)}")
+        logger.error(f"Report generation failed: {str(e)}")
         return {"error": str(e)}
 
 @app.route('/')
@@ -719,7 +734,7 @@ def api_scan_target():
                         }
                 sock.close()
             except Exception as e:
-                logging.warning(f"Error scanning port {port}: {str(e)}")
+                logger.warning(f"Error scanning port {port}: {str(e)}")
 
         # OS detection using TTL
         try:
@@ -740,7 +755,7 @@ def api_scan_target():
 
         return jsonify(scan_results)
     except Exception as e:
-        logging.error(f"Scan failed for target {target}: {str(e)}")
+        logger.error(f"Scan failed for target {target}: {str(e)}")
         return jsonify({
             "error": str(e),
             "target": target,
