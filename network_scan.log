@@ -85,3 +85,38 @@
 2025-03-19 12:57:42,992 - INFO -  * Debugger PIN: 536-982-064
 2025-03-19 12:58:54,448 - INFO - 127.0.0.1 - - [19/Mar/2025 12:58:54] "GET /api/local-ip HTTP/1.1" 200 -
 2025-03-19 12:58:57,865 - INFO - 127.0.0.1 - - [19/Mar/2025 12:58:57] "GET /api/system-info HTTP/1.1" 200 -
+2025-03-19 13:18:44,089 - INFO - 127.0.0.1 - - [19/Mar/2025 13:18:44] "GET /api/check-anonymity HTTP/1.1" 200 -
+2025-03-19 13:19:33,169 - INFO - 127.0.0.1 - - [19/Mar/2025 13:19:33] "GET /api/check-anonymity HTTP/1.1" 200 -
+2025-03-19 13:19:42,207 - ERROR - Failed to save scan results: Object of type datetime is not JSON serializable
+2025-03-19 13:19:42,208 - INFO - 127.0.0.1 - - [19/Mar/2025 13:19:42] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 13:19:48,284 - INFO - Installed package: python-whois
+2025-03-19 13:19:50,556 - INFO - Installed package: paramiko
+2025-03-19 13:19:52,807 - INFO - Installed package: cryptography
+2025-03-19 13:19:52,808 - INFO - 127.0.0.1 - - [19/Mar/2025 13:19:52] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 13:19:52,812 - INFO - 127.0.0.1 - - [19/Mar/2025 13:19:52] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 13:20:35,393 - INFO - 127.0.0.1 - - [19/Mar/2025 13:20:35] "GET /api/router-details HTTP/1.1" 200 -
+2025-03-19 13:23:23,493 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:23:23,816 - INFO -  * Restarting with stat
+2025-03-19 13:23:26,244 - WARNING -  * Debugger is active!
+2025-03-19 13:23:26,254 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:29:41,941 - INFO - 127.0.0.1 - - [19/Mar/2025 13:29:41] "GET / HTTP/1.1" 200 -
+2025-03-19 13:29:42,239 - INFO - 127.0.0.1 - - [19/Mar/2025 13:29:42] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:30:07,974 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:07] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:30:10,211 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:10] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:30:11,872 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:11] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:30:14,134 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:14] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:30:15,701 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:15] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:30:17,439 - INFO - 127.0.0.1 - - [19/Mar/2025 13:30:17] "GET /api/random-attack HTTP/1.1" 200 -
+2025-03-19 13:35:27,178 - INFO - Starting Ping Flood Attack on target 10.12.72.76
+2025-03-19 13:35:28,191 - INFO - Starting Ping Flood Attack on target 10.12.72.76
+2025-03-19 13:35:31,314 - INFO - Starting Ping Flood Attack on target 10.12.72.76
+2025-03-19 13:35:33,680 - INFO - 127.0.0.1 - - [19/Mar/2025 13:35:33] "GET /api/local-ip HTTP/1.1" 200 -
+2025-03-19 13:35:35,705 - INFO - Starting Ping Flood Attack on target 10.12.72.76
+2025-03-19 13:36:04,892 - INFO - Completed Ping Flood Attack on 10.12.72.76. Duration: 37.71s
+2025-03-19 13:36:04,893 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:04] "POST /api/simulate-attack HTTP/1.1" 200 -
+2025-03-19 13:36:06,890 - INFO - Completed Ping Flood Attack on 10.12.72.76. Duration: 38.70s
+2025-03-19 13:36:06,890 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:06] "POST /api/simulate-attack HTTP/1.1" 200 -
+2025-03-19 13:36:07,895 - INFO - Completed Ping Flood Attack on 10.12.72.76. Duration: 36.58s
+2025-03-19 13:36:07,896 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:07] "POST /api/simulate-attack HTTP/1.1" 200 -
+2025-03-19 13:36:08,898 - INFO - Completed Ping Flood Attack on 10.12.72.76. Duration: 33.19s
+2025-03-19 13:36:08,899 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:08] "POST /api/simulate-attack HTTP/1.1" 200 -

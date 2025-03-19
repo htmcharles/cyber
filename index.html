@@ -145,6 +145,43 @@
             </div>
         </div>
 
+        <!-- Network Attack Simulation -->
+        <div class="card mt-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-shield-virus me-2"></i>Network Attack Simulation</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Network Discovery</h6>
+                        <button class="btn btn-outline-danger mb-3" onclick="discoverHosts()">
+                            <i class="fas fa-search me-2"></i>Discover Network Hosts
+                        </button>
+                        <div id="hostsList" class="mb-3"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Attack Simulation</h6>
+                        <div class="form-group mb-3">
+                            <label>Select Attack Type:</label>
+                            <select id="attackType" class="form-select mb-2">
+                                <option value="">Choose an attack...</option>
+                            </select>
+                            <button class="btn btn-outline-danger" onclick="getRandomAttack()">
+                                <i class="fas fa-random me-2"></i>Random Attack
+                            </button>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Target IP:</label>
+                            <input type="text" id="targetIp" class="form-control" placeholder="Enter target IP">
+                        </div>
+                        <button class="btn btn-danger" onclick="simulateAttack()">
+                            <i class="fas fa-play me-2"></i>Start Attack
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Results Area -->
         <div class="card mt-4">
             <div class="card-header bg-secondary text-white">
@@ -279,6 +316,127 @@
                 loading.style.display = 'none';
             }
         }
+
+        async function discoverHosts() {
+            const resultArea = document.getElementById('hostsList');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/discover-hosts');
+                const data = await response.json();
+
+                if (data.hosts && data.hosts.length > 0) {
+                    let html = '<div class="list-group">';
+                    data.hosts.forEach(host => {
+                        html += `
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">${host.hostname || 'Unknown'}</h6>
+                                        <small>IP: ${host.ip}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="setTargetIp('${host.ip}')">
+                                        <i class="fas fa-crosshairs"></i> Select
+                                    </button>
+                                </div>
+                            </div>`;
+                    });
+                    html += '</div>';
+                    resultArea.innerHTML = html;
+                } else {
+                    resultArea.innerHTML = '<div class="alert alert-info">No hosts found</div>';
+                }
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function loadAttackTypes() {
+            try {
+                const response = await fetch('/api/attack-types');
+                const data = await response.json();
+
+                const select = document.getElementById('attackType');
+                select.innerHTML = '<option value="">Choose an attack...</option>';
+
+                Object.entries(data).forEach(([key, value]) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = value.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load attack types:', error);
+            }
+        }
+
+        async function getRandomAttack() {
+            try {
+                const response = await fetch('/api/random-attack');
+                const data = await response.json();
+                document.getElementById('attackType').value = data.attack_type;
+            } catch (error) {
+                console.error('Failed to get random attack:', error);
+            }
+        }
+
+        function setTargetIp(ip) {
+            document.getElementById('targetIp').value = ip;
+        }
+
+        async function simulateAttack() {
+            const attackType = document.getElementById('attackType').value;
+            const targetIp = document.getElementById('targetIp').value;
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            if (!attackType || !targetIp) {
+                alert('Please select an attack type and enter a target IP');
+                return;
+            }
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/simulate-attack', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        attack_type: attackType,
+                        target_ip: targetIp
+                    }),
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    resultArea.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    resultArea.innerHTML = `
+                        <div class="alert alert-success">
+                            <h5>Attack Simulation Complete</h5>
+                            <p>Type: ${data.attack_type}</p>
+                            <p>Target: ${data.target_ip}</p>
+                            <p>Duration: ${data.duration.toFixed(2)}s</p>
+                            <pre>${data.output}</pre>
+                        </div>`;
+                }
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Load attack types when the page loads
+        document.addEventListener('DOMContentLoaded', loadAttackTypes);
     </script>
 </body>
 </html>
