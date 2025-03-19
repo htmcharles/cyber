@@ -2,12 +2,9 @@
 # exit on error
 set -o errexit
 
-# Update pip and install build dependencies first
-python -m pip install --upgrade pip
-python -m pip install --upgrade setuptools wheel
+# Update pip to latest version
+python -m pip install --upgrade pip setuptools wheel
 
-# Install cryptography separately with pre-built wheels
-pip install --no-cache-dir cryptography==41.0.7 --no-binary cryptography
-
-# Install remaining dependencies
+# Install dependencies in a specific order
+pip install --no-cache-dir cryptography==41.0.7
 pip install --no-cache-dir -r requirements.txt
