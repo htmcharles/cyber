@@ -189,3 +189,11 @@
 2025-03-19 13:57:08,648 - INFO - 127.0.0.1 - - [19/Mar/2025 13:57:08] "POST /api/scan-target HTTP/1.1" 200 -
 2025-03-19 13:58:03,131 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
 2025-03-19 13:58:03,268 - INFO -  * Restarting with stat
+2025-03-19 13:58:04,764 - WARNING -  * Debugger is active!
+2025-03-19 13:58:04,768 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:58:23,178 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:58:23,387 - INFO -  * Restarting with stat
+2025-03-19 13:58:25,075 - WARNING -  * Debugger is active!
+2025-03-19 13:58:25,078 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:59:41,452 - INFO - 127.0.0.1 - - [19/Mar/2025 13:59:41] "GET / HTTP/1.1" 200 -
+2025-03-19 13:59:41,664 - INFO - 127.0.0.1 - - [19/Mar/2025 13:59:41] "GET /api/attack-types HTTP/1.1" 200 -
