@@ -10,11 +10,12 @@ import paramiko
 import nmap
 import whois
 import logging
+import time
+import random
 from datetime import datetime
 from flask import Flask, send_file, jsonify, request
 from cryptography.fernet import Fernet
 import threading
-import time
 import sys
 
 app = Flask(__name__)
@@ -28,6 +29,28 @@ logging.basicConfig(
 
 # Global variables for installation status
 INSTALLED_PACKAGES = set()
+
+# Network attack types and their descriptions
+NETWORK_ATTACKS = {
+    "ping_flood": {
+        "name": "Ping Flood Attack",
+        "description": "Simulates a ping flood attack by sending multiple ICMP echo requests to overwhelm the target.",
+        "command": "ping -n 1000 -l 65500 {target}",
+        "duration": 5
+    },
+    "syn_flood": {
+        "name": "SYN Flood Attack",
+        "description": "Simulates a SYN flood attack by sending multiple TCP SYN packets to exhaust target's connection queue.",
+        "command": "hping3 -S -p 80 --flood {target}",
+        "duration": 5
+    },
+    "port_scan": {
+        "name": "Port Scan Attack",
+        "description": "Performs a rapid port scan to identify open ports and services on the target.",
+        "command": "nmap -T4 -F {target}",
+        "duration": 10
+    }
+}
 
 def check_and_install_requirements():
     """Check and install required packages if not already installed."""
@@ -304,6 +327,78 @@ def parse_auth_log():
     except Exception as e:
         return f"Error reading auth.log: {e}"
 
+def discover_network_hosts():
+    """Discover hosts on the local network."""
+    try:
+        local_ip = get_local_ip()
+        network_prefix = '.'.join(local_ip.split('.')[:-1])
+        hosts = []
+
+        # Scan common network ranges
+        for i in range(1, 255):
+            ip = f"{network_prefix}.{i}"
+            try:
+                # Try to resolve hostname
+                hostname = socket.gethostbyaddr(ip)[0]
+                hosts.append({
+                    "ip": ip,
+                    "hostname": hostname,
+                    "status": "active"
+                })
+            except:
+                continue
+
+        return hosts
+    except Exception as e:
+        logging.error(f"Network discovery failed: {str(e)}")
+        return []
+
+def simulate_network_attack(attack_type, target_ip):
+    """Simulate a network attack and log the results."""
+    try:
+        if attack_type not in NETWORK_ATTACKS:
+            return {"error": "Invalid attack type"}
+
+        attack_info = NETWORK_ATTACKS[attack_type]
+        start_time = time.time()
+
+        # Log attack initiation
+        logging.info(f"Starting {attack_info['name']} on target {target_ip}")
+
+        # Simulate attack (using safe commands for testing)
+        if attack_type == "ping_flood":
+            # Use a limited number of pings for testing
+            command = f"ping -n 10 -l 1000 {target_ip}"
+        elif attack_type == "syn_flood":
+            # Use a safe port scanning command instead
+            command = f"nmap -sS -p 80 {target_ip}"
+        else:
+            command = f"nmap -T4 -F {target_ip}"
+
+        # Execute command and capture output
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+
+        # Calculate duration
+        duration = time.time() - start_time
+
+        # Log attack completion
+        logging.info(f"Completed {attack_info['name']} on {target_ip}. Duration: {duration:.2f}s")
+
+        return {
+            "attack_type": attack_type,
+            "target_ip": target_ip,
+            "duration": duration,
+            "output": result.stdout,
+            "status": "completed"
+        }
+    except Exception as e:
+        logging.error(f"Attack simulation failed: {str(e)}")
+        return {"error": str(e)}
+
+def get_random_attack():
+    """Get a random attack type from the available attacks."""
+    return random.choice(list(NETWORK_ATTACKS.keys()))
+
 @app.route('/')
 def index():
     return send_file('index.html')
@@ -385,6 +480,30 @@ def api_ssh_connect():
 def api_install_requirements():
     result = check_and_install_requirements()
     return jsonify(result)
+
+@app.route('/api/discover-hosts')
+def api_discover_hosts():
+    return jsonify({"hosts": discover_network_hosts()})
+
+@app.route('/api/attack-types')
+def api_attack_types():
+    return jsonify(NETWORK_ATTACKS)
+
+@app.route('/api/simulate-attack', methods=['POST'])
+def api_simulate_attack():
+    data = request.get_json()
+    attack_type = data.get('attack_type')
+    target_ip = data.get('target_ip')
+
+    if not attack_type or not target_ip:
+        return jsonify({"error": "Missing attack type or target IP"}), 400
+
+    result = simulate_network_attack(attack_type, target_ip)
+    return jsonify(result)
+
+@app.route('/api/random-attack')
+def api_random_attack():
+    return jsonify({"attack_type": get_random_attack()})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
