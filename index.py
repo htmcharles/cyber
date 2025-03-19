@@ -2,12 +2,11 @@ import os
 import platform
 import socket
 import subprocess
+import psutil
 import requests
 import re
 import json
-
 def get_local_ip():
-    """Retrieve the local IP address of the machine."""
     try:
         hostname = socket.gethostname()
         local_ip = socket.gethostbyname(hostname)
@@ -16,7 +15,6 @@ def get_local_ip():
         return f"Error retrieving local IP: {e}"
 
 def get_mac_address():
-    """Retrieve the MAC address of the machine."""
     try:
         if platform.system() == "Windows":
             output = subprocess.check_output("getmac", shell=True).decode()
@@ -29,19 +27,14 @@ def get_mac_address():
         return f"Error retrieving MAC address: {e}"
 
 def get_router_details():
-    """Retrieve the router's IP address and other details."""
     try:
         output = subprocess.check_output("ipconfig" if platform.system() == "Windows" else "ip route", shell=True).decode()
-        if platform.system() == "Windows":
-            router_ip = re.search(r"Default Gateway.*?: (\d+\.\d+\.\d+\.\d+)", output)
-        else:
-            router_ip = re.search(r"default via (\d+\.\d+\.\d+\.\d+)", output)
+        router_ip = re.search(r"Default Gateway.*?: (\d+\.\d+\.\d+\.\d+)" if platform.system() == "Windows" else "default via (\d+\.\d+\.\d+\.\d+)", output)
         return router_ip.group(1) if router_ip else "Router IP not found"
     except Exception as e:
         return f"Error retrieving router details: {e}"
 
 def get_isp_info():
-    """Retrieve ISP information using an external API."""
     try:
         response = requests.get("http://ip-api.com/json")
         data = response.json()
@@ -57,7 +50,6 @@ def get_isp_info():
         return f"Error retrieving ISP details: {e}"
 
 def get_connected_devices():
-    """Retrieve the list of connected devices on the network."""
     try:
         output = subprocess.check_output("arp -a" if platform.system() == "Windows" else "arp -n", shell=True).decode()
         devices = re.findall(r"(\d+\.\d+\.\d+\.\d+)\s+([0-9A-Fa-f:-]{17})", output)
@@ -66,7 +58,6 @@ def get_connected_devices():
         return f"Error retrieving connected devices: {e}"
 
 def get_connection_type():
-    """Identify whether the connection is Ethernet or Wireless."""
     try:
         if platform.system() == "Windows":
             output = subprocess.check_output("netsh interface show interface", shell=True).decode()
@@ -77,6 +68,44 @@ def get_connection_type():
         return connection if connection else "Connection type not identified"
     except Exception as e:
         return f"Error retrieving connection type: {e}"
+
+def get_system_info():
+    return {
+        "OS": platform.system(),
+        "OS Version": platform.version(),
+        "Architecture": platform.architecture()[0]
+    }
+
+def get_network_statistics():
+    try:
+        output = subprocess.check_output("ipconfig /all" if platform.system() == "Windows" else "ifconfig", shell=True).decode()
+        return output
+    except Exception as e:
+        return f"Error retrieving network statistics: {e}"
+
+def get_disk_usage():
+    try:
+        usage = psutil.disk_usage('/')
+        output = subprocess.check_output("du -ah / | sort -rh | head -n 5", shell=True).decode()
+        return {
+            "Total": usage.total,
+            "Used": usage.used,
+            "Free": usage.free,
+            "Largest Directories": output
+        }
+    except Exception as e:
+        return f"Error retrieving disk usage: {e}"
+
+def monitor_cpu_usage():
+    return f"CPU Usage: {psutil.cpu_percent(interval=1)}%"
+
+def parse_auth_log():
+    try:
+        with open("/var/log/auth.log", "r") as f:
+            logs = f.readlines()
+        return logs[-10:] if logs else "No recent authentication logs found"
+    except Exception as e:
+        return f"Error reading auth.log: {e}"
 
 def main():
     while True:
@@ -89,7 +118,12 @@ def main():
         print("5. Get Connected Devices")
         print("6. Get Connection Type")
         print("7. Show All Network Details")
-        print("8. Exit")
+        print("8. Get System Information")
+        print("9. Get Network Statistics")
+        print("10. Get Disk Usage")
+        print("11. Monitor CPU Usage")
+        print("12. Parse Authentication Logs")
+        print("13. Exit")
         choice = input("Enter your choice: ")
 
         if choice == "1":
@@ -99,32 +133,33 @@ def main():
         elif choice == "3":
             print(f"Router Details: {get_router_details()}")
         elif choice == "4":
-            isp_info = get_isp_info()
-            print("ISP Information:")
-            print(json.dumps(isp_info, indent=4))
+            print("ISP Information:", json.dumps(get_isp_info(), indent=4))
         elif choice == "5":
-            devices = get_connected_devices()
-            print("Connected Devices:")
-            print(json.dumps(devices, indent=4))
+            print("Connected Devices:", json.dumps(get_connected_devices(), indent=4))
         elif choice == "6":
             print(f"Connection Type: {get_connection_type()}")
         elif choice == "7":
-            print("\nNetwork Mapping Details\n" + "="*50)
-            print(f"Local IP Address: {get_local_ip()}")
+            print("\nComplete Network Overview", "="*50)
+            print(f"Local IP: {get_local_ip()}")
             print(f"MAC Address: {get_mac_address()}")
-            print(f"Router Details: {get_router_details()}")
-            print(f"Connection Type: {get_connection_type()}")
-            isp_info = get_isp_info()
-            print("\nISP Information:")
-            print(json.dumps(isp_info, indent=4))
-            devices = get_connected_devices()
-            print("\nConnected Devices:")
-            print(json.dumps(devices, indent=4))
+            print(f"Router: {get_router_details()}")
+            print("ISP Info:", json.dumps(get_isp_info(), indent=4))
+            print("Devices:", json.dumps(get_connected_devices(), indent=4))
         elif choice == "8":
+            print("System Info:", json.dumps(get_system_info(), indent=4))
+        elif choice == "9":
+            print(get_network_statistics())
+        elif choice == "10":
+            print("Disk Usage:", json.dumps(get_disk_usage(), indent=4))
+        elif choice == "11":
+            print(monitor_cpu_usage())
+        elif choice == "12":
+            print("Auth Logs:", "\n".join(parse_auth_log()))
+        elif choice == "13":
             print("Exiting...")
             break
         else:
-            print("Invalid choice. Please enter a number between 1 and 8.")
+            print("Invalid choice.")
 
 if __name__ == "__main__":
     main()
