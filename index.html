@@ -37,6 +37,18 @@
     <div class="container py-5">
         <h1 class="text-center mb-5">Network Mapping Tool</h1>
 
+        <!-- System Setup -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-cogs me-2"></i>System Setup</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-info" onclick="installRequirements()">
+                    <i class="fas fa-download me-2"></i>Install Required Packages
+                </button>
+            </div>
+        </div>
+
         <div class="row">
             <!-- Network Information -->
             <div class="col-md-6">
@@ -63,6 +75,9 @@
                             </button>
                             <button class="btn btn-outline-primary" onclick="getInfo('connection-type')">
                                 <i class="fas fa-wifi me-2"></i>Get Connection Type
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('check-anonymity')">
+                                <i class="fas fa-user-secret me-2"></i>Check Anonymity
                             </button>
                         </div>
                     </div>
@@ -98,93 +113,33 @@
             </div>
         </div>
 
-        <!-- Security Analysis -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="card-title mb-0"><i class="fas fa-shield-alt me-2"></i>Security Analysis</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="target">Target IP/Domain:</label>
-                            <input type="text" id="target" class="form-control" placeholder="Enter target IP or domain">
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-danger" onclick="checkAnonymity()">
-                                <i class="fas fa-user-secret me-2"></i>Check Anonymity
-                            </button>
-                            <button class="btn btn-outline-danger" onclick="scanTarget()">
-                                <i class="fas fa-search me-2"></i>Scan Target
-                            </button>
-                            <button class="btn btn-outline-danger" onclick="whoisLookup()">
-                                <i class="fas fa-info-circle me-2"></i>WHOIS Lookup
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Advanced Scanning -->
+        <div class="card mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0"><i class="fas fa-search me-2"></i>Advanced Scanning</h5>
             </div>
-
-            <!-- Remote Access -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="card-title mb-0"><i class="fas fa-terminal me-2"></i>Remote Access</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Target Scan</h6>
+                        <div class="form-group">
+                            <input type="text" id="scanTarget" class="form-control" placeholder="Enter target IP or domain">
+                        </div>
+                        <button class="btn btn-warning" onclick="scanTarget()">
+                            <i class="fas fa-search me-2"></i>Scan Target
+                        </button>
                     </div>
-                    <div class="card-body">
+                    <div class="col-md-6">
+                        <h6>SSH Connection</h6>
                         <div class="form-group">
-                            <label for="hostname">Hostname:</label>
-                            <input type="text" id="hostname" class="form-control" placeholder="Enter hostname">
+                            <input type="text" id="sshHost" class="form-control mb-2" placeholder="Hostname">
+                            <input type="text" id="sshUser" class="form-control mb-2" placeholder="Username">
+                            <input type="password" id="sshPass" class="form-control mb-2" placeholder="Password">
+                            <input type="text" id="sshKey" class="form-control mb-2" placeholder="Key file path (optional)">
                         </div>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" class="form-control" placeholder="Enter username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" class="form-control" placeholder="Enter password">
-                        </div>
-                        <div class="form-group">
-                            <label for="keyFile">SSH Key File (optional):</label>
-                            <input type="text" id="keyFile" class="form-control" placeholder="Path to SSH key file">
-                        </div>
-                        <div class="form-group">
-                            <label for="command">Command:</label>
-                            <input type="text" id="command" class="form-control" placeholder="Enter command to execute">
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-warning" onclick="sshConnect()">
-                                <i class="fas fa-plug me-2"></i>Connect SSH
-                            </button>
-                            <button class="btn btn-outline-warning" onclick="executeCommand()">
-                                <i class="fas fa-terminal me-2"></i>Execute Command
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Management -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="card-title mb-0"><i class="fas fa-database me-2"></i>Data Management</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="filename">Filename:</label>
-                            <input type="text" id="filename" class="form-control" placeholder="Enter filename">
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-info" onclick="saveData()">
-                                <i class="fas fa-save me-2"></i>Save Data
-                            </button>
-                            <button class="btn btn-outline-info" onclick="loadData()">
-                                <i class="fas fa-folder-open me-2"></i>Load Data
-                            </button>
-                        </div>
+                        <button class="btn btn-warning" onclick="sshConnect()">
+                            <i class="fas fa-terminal me-2"></i>Connect SSH
+                        </button>
                     </div>
                 </div>
             </div>
@@ -231,7 +186,7 @@
             }
         }
 
-        async function checkAnonymity() {
+        async function installRequirements() {
             const resultArea = document.getElementById('result');
             const loading = document.querySelector('.loading');
 
@@ -239,29 +194,27 @@
             resultArea.innerHTML = '';
 
             try {
-                const response = await fetch('/api/check-anonymity');
+                const response = await fetch('/api/install-requirements');
                 const data = await response.json();
 
-                let result = '';
-                if (data.is_anonymous) {
-                    result = `<div class="alert alert-success">Your connection is anonymous!</div>`;
-                } else {
-                    result = `<div class="alert alert-warning">Your connection is not anonymous.</div>`;
-                }
-
-                result += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-                resultArea.innerHTML = result;
+                resultArea.innerHTML = `<div class="alert ${data.success ? 'alert-success' : 'alert-danger'}">
+                    <i class="fas ${data.success ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                    ${data.message}
+                </div>`;
             } catch (error) {
-                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                resultArea.innerHTML = `<div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Error: ${error.message}
+                </div>`;
             } finally {
                 loading.style.display = 'none';
             }
         }
 
         async function scanTarget() {
-            const target = document.getElementById('target').value;
+            const target = document.getElementById('scanTarget').value;
             if (!target) {
-                alert('Please enter a target IP or domain');
+                alert('Please enter a target');
                 return;
             }
 
@@ -275,39 +228,9 @@
                 const response = await fetch('/api/scan-target', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ target })
-                });
-                const data = await response.json();
-                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (error) {
-                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        async function whoisLookup() {
-            const domain = document.getElementById('target').value;
-            if (!domain) {
-                alert('Please enter a domain name');
-                return;
-            }
-
-            const resultArea = document.getElementById('result');
-            const loading = document.querySelector('.loading');
-
-            loading.style.display = 'block';
-            resultArea.innerHTML = '';
-
-            try {
-                const response = await fetch('/api/whois', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ domain })
+                    body: JSON.stringify({ target }),
                 });
                 const data = await response.json();
                 resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
@@ -319,10 +242,10 @@
         }
 
         async function sshConnect() {
-            const hostname = document.getElementById('hostname').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const keyFile = document.getElementById('keyFile').value;
+            const hostname = document.getElementById('sshHost').value;
+            const username = document.getElementById('sshUser').value;
+            const password = document.getElementById('sshPass').value;
+            const key_filename = document.getElementById('sshKey').value;
 
             if (!hostname || !username) {
                 alert('Please enter hostname and username');
@@ -339,107 +262,14 @@
                 const response = await fetch('/api/ssh-connect', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         hostname,
                         username,
-                        password,
-                        key_filename: keyFile || undefined
-                    })
-                });
-                const data = await response.json();
-                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (error) {
-                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        async function executeCommand() {
-            const command = document.getElementById('command').value;
-            if (!command) {
-                alert('Please enter a command');
-                return;
-            }
-
-            const resultArea = document.getElementById('result');
-            const loading = document.querySelector('.loading');
-
-            loading.style.display = 'block';
-            resultArea.innerHTML = '';
-
-            try {
-                const response = await fetch('/api/ssh-command', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ command })
-                });
-                const data = await response.json();
-                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (error) {
-                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        async function saveData() {
-            const filename = document.getElementById('filename').value;
-            if (!filename) {
-                alert('Please enter a filename');
-                return;
-            }
-
-            const resultArea = document.getElementById('result');
-            const loading = document.querySelector('.loading');
-
-            loading.style.display = 'block';
-            resultArea.innerHTML = '';
-
-            try {
-                const response = await fetch('/api/save-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        filename,
-                        data: resultArea.innerHTML
-                    })
-                });
-                const data = await response.json();
-                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-            } catch (error) {
-                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        async function loadData() {
-            const filename = document.getElementById('filename').value;
-            if (!filename) {
-                alert('Please enter a filename');
-                return;
-            }
-
-            const resultArea = document.getElementById('result');
-            const loading = document.querySelector('.loading');
-
-            loading.style.display = 'block';
-            resultArea.innerHTML = '';
-
-            try {
-                const response = await fetch('/api/load-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ filename })
+                        password: password || undefined,
+                        key_filename: key_filename || undefined,
+                    }),
                 });
                 const data = await response.json();
                 resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
