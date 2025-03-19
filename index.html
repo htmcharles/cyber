@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Mapping Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .card {
+            transition: transform 0.2s;
+            margin-bottom: 1rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .result-area {
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-5">Network Mapping Tool</h1>
+
+        <div class="row">
+            <!-- Network Information -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0"><i class="fas fa-network-wired me-2"></i>Network Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="getInfo('local-ip')">
+                                <i class="fas fa-laptop me-2"></i>Get Local IP
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('mac-address')">
+                                <i class="fas fa-id-card me-2"></i>Get MAC Address
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('router-details')">
+                                <i class="fas fa-router me-2"></i>Get Router Details
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('isp-info')">
+                                <i class="fas fa-globe me-2"></i>Get ISP Information
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('connected-devices')">
+                                <i class="fas fa-users me-2"></i>Get Connected Devices
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('connection-type')">
+                                <i class="fas fa-wifi me-2"></i>Get Connection Type
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0"><i class="fas fa-desktop me-2"></i>System Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-success" onclick="getInfo('system-info')">
+                                <i class="fas fa-info-circle me-2"></i>Get System Information
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('network-stats')">
+                                <i class="fas fa-chart-line me-2"></i>Get Network Statistics
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('disk-usage')">
+                                <i class="fas fa-hdd me-2"></i>Get Disk Usage
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('cpu-usage')">
+                                <i class="fas fa-microchip me-2"></i>Monitor CPU Usage
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('auth-logs')">
+                                <i class="fas fa-shield-alt me-2"></i>Parse Authentication Logs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Analysis -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="card-title mb-0"><i class="fas fa-shield-alt me-2"></i>Security Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="target">Target IP/Domain:</label>
+                            <input type="text" id="target" class="form-control" placeholder="Enter target IP or domain">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="checkAnonymity()">
+                                <i class="fas fa-user-secret me-2"></i>Check Anonymity
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="scanTarget()">
+                                <i class="fas fa-search me-2"></i>Scan Target
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="whoisLookup()">
+                                <i class="fas fa-info-circle me-2"></i>WHOIS Lookup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remote Access -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0"><i class="fas fa-terminal me-2"></i>Remote Access</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="hostname">Hostname:</label>
+                            <input type="text" id="hostname" class="form-control" placeholder="Enter hostname">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" class="form-control" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" class="form-control" placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label for="keyFile">SSH Key File (optional):</label>
+                            <input type="text" id="keyFile" class="form-control" placeholder="Path to SSH key file">
+                        </div>
+                        <div class="form-group">
+                            <label for="command">Command:</label>
+                            <input type="text" id="command" class="form-control" placeholder="Enter command to execute">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="sshConnect()">
+                                <i class="fas fa-plug me-2"></i>Connect SSH
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="executeCommand()">
+                                <i class="fas fa-terminal me-2"></i>Execute Command
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0"><i class="fas fa-database me-2"></i>Data Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="filename">Filename:</label>
+                            <input type="text" id="filename" class="form-control" placeholder="Enter filename">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-info" onclick="saveData()">
+                                <i class="fas fa-save me-2"></i>Save Data
+                            </button>
+                            <button class="btn btn-outline-info" onclick="loadData()">
+                                <i class="fas fa-folder-open me-2"></i>Load Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-terminal me-2"></i>Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="result" class="result-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function getInfo(type) {
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch(`/api/${type}`);
+                const data = await response.json();
+
+                if (typeof data === 'object') {
+                    resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultArea.innerHTML = `<pre>${data}</pre>`;
+                }
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function checkAnonymity() {
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/check-anonymity');
+                const data = await response.json();
+
+                let result = '';
+                if (data.is_anonymous) {
+                    result = `<div class="alert alert-success">Your connection is anonymous!</div>`;
+                } else {
+                    result = `<div class="alert alert-warning">Your connection is not anonymous.</div>`;
+                }
+
+                result += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                resultArea.innerHTML = result;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function scanTarget() {
+            const target = document.getElementById('target').value;
+            if (!target) {
+                alert('Please enter a target IP or domain');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/scan-target', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ target })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function whoisLookup() {
+            const domain = document.getElementById('target').value;
+            if (!domain) {
+                alert('Please enter a domain name');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/whois', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ domain })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function sshConnect() {
+            const hostname = document.getElementById('hostname').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const keyFile = document.getElementById('keyFile').value;
+
+            if (!hostname || !username) {
+                alert('Please enter hostname and username');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/ssh-connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hostname,
+                        username,
+                        password,
+                        key_filename: keyFile || undefined
+                    })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function executeCommand() {
+            const command = document.getElementById('command').value;
+            if (!command) {
+                alert('Please enter a command');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/ssh-command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function saveData() {
+            const filename = document.getElementById('filename').value;
+            if (!filename) {
+                alert('Please enter a filename');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/save-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filename,
+                        data: resultArea.innerHTML
+                    })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function loadData() {
+            const filename = document.getElementById('filename').value;
+            if (!filename) {
+                alert('Please enter a filename');
+                return;
+            }
+
+            const resultArea = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            loading.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/load-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filename })
+                });
+                const data = await response.json();
+                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
