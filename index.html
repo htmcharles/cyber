@@ -17,16 +17,146 @@
             --dark-bg: #1a1a1a;
             --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition-speed: 0.3s;
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 70px;
         }
 
         body {
             background-color: var(--light-bg);
             transition: background-color var(--transition-speed);
+            overflow-x: hidden;
         }
 
         body.dark-theme {
             background-color: var(--dark-bg);
-            color: #fff;
+            color: #e0e0e0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--secondary-color), #34495e);
+            color: white;
+            transition: all var(--transition-speed);
+            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+        }
+
+        .sidebar.collapsed .sidebar-header h3 {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .sidebar-logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            transition: all var(--transition-speed);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .sidebar.collapsed .sidebar-logo {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+
+        .sidebar-menu-item {
+            padding: 0.75rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all var(--transition-speed);
+        }
+
+        .sidebar-menu-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar-menu-item.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar-menu-item i {
+            width: 20px;
+            margin-right: 1rem;
+        }
+
+        .sidebar-menu-item span {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .sidebar-menu-item span {
+            display: none;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 60px;
+            padding: 2rem;
+            transition: all var(--transition-speed);
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
         }
 
         .card {
@@ -106,10 +236,10 @@
         }
 
         .theme-toggle {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 1000;
+            position: relative;
+            top: auto;
+            right: auto;
+            z-index: auto;
         }
 
         .section-title {
@@ -120,7 +250,7 @@
         }
 
         .dark-theme .section-title {
-            color: #fff;
+            color: #ffffff;
         }
 
         .alert {
@@ -174,18 +304,704 @@
             background-color: rgba(231, 76, 60, 0.1);
             color: var(--danger-color);
         }
+
+        /* Dark mode overrides */
+        .dark-theme .card {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .card-header {
+            background-color: #252525 !important;
+            border-bottom-color: #3d3d3d;
+        }
+
+        .dark-theme .form-control {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .form-control:focus {
+            background-color: #2d2d2d;
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .dark-theme .form-select {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .form-select:focus {
+            background-color: #2d2d2d;
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .dark-theme .list-group-item {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .list-group-item:hover {
+            background-color: #363636;
+        }
+
+        .dark-theme .result-area {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+
+        .dark-theme pre {
+            background-color: #252525;
+            color: #fff;
+            border: 1px solid #3d3d3d;
+        }
+
+        .dark-theme .alert {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .alert-success {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .dark-theme .alert-warning {
+            background-color: rgba(241, 196, 15, 0.1);
+            border-color: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .dark-theme .alert-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .dark-theme .alert-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        .dark-theme .text-muted {
+            color: #a0a0a0 !important;
+        }
+
+        .dark-theme .modal-content {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .modal-header {
+            border-bottom-color: #3d3d3d;
+        }
+
+        .dark-theme .modal-footer {
+            border-top-color: #3d3d3d;
+        }
+
+        .dark-theme .dropdown-menu {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .dropdown-item {
+            color: #fff;
+        }
+
+        .dark-theme .dropdown-item:hover {
+            background-color: #363636;
+            color: #fff;
+        }
+
+        .dark-theme .table {
+            color: #fff;
+        }
+
+        .dark-theme .table td,
+        .dark-theme .table th {
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .table-hover tbody tr:hover {
+            background-color: #363636;
+        }
+
+        .dark-theme .btn-outline-light {
+            color: #fff;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .btn-outline-light:hover {
+            background-color: #3d3d3d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .btn-outline-dark {
+            color: #fff;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .btn-outline-dark:hover {
+            background-color: #3d3d3d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .form-check-input {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .dark-theme .form-check-label {
+            color: #fff;
+        }
+
+        .dark-theme .input-group-text {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .badge {
+            background-color: #363636;
+            color: #fff;
+        }
+
+        .dark-theme .nav-tabs {
+            border-bottom-color: #3d3d3d;
+        }
+
+        .dark-theme .nav-tabs .nav-link {
+            color: #fff;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .nav-tabs .nav-link:hover {
+            border-color: #3d3d3d;
+            background-color: #363636;
+        }
+
+        .dark-theme .nav-tabs .nav-link.active {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .progress {
+            background-color: #363636;
+        }
+
+        .dark-theme .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .dark-theme .toast {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .toast-header {
+            background-color: #252525;
+            border-bottom-color: #3d3d3d;
+        }
+
+        .dark-theme .toast-body {
+            color: #fff;
+        }
+
+        .dark-theme .popover {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .popover-header {
+            background-color: #252525;
+            border-bottom-color: #3d3d3d;
+            color: #fff;
+        }
+
+        .dark-theme .popover-body {
+            color: #fff;
+        }
+
+        .dark-theme .tooltip {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+
+        .dark-theme .tooltip-inner {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+
+        .dark-theme .bs-tooltip-top .arrow::before {
+            border-top-color: #2d2d2d;
+        }
+
+        .dark-theme .bs-tooltip-bottom .arrow::before {
+            border-bottom-color: #2d2d2d;
+        }
+
+        .dark-theme .bs-tooltip-start .arrow::before {
+            border-left-color: #2d2d2d;
+        }
+
+        .dark-theme .bs-tooltip-end .arrow::before {
+            border-right-color: #2d2d2d;
+        }
+
+        .dark-theme .spinner-border {
+            color: var(--primary-color);
+        }
+
+        .dark-theme .spinner-border.text-secondary {
+            color: #6c757d !important;
+        }
+
+        .dark-theme .spinner-border.text-success {
+            color: var(--success-color) !important;
+        }
+
+        .dark-theme .spinner-border.text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .dark-theme .spinner-border.text-warning {
+            color: var(--warning-color) !important;
+        }
+
+        .dark-theme .spinner-border.text-info {
+            color: #17a2b8 !important;
+        }
+
+        .dark-theme .spinner-border.text-light {
+            color: #f8f9fa !important;
+        }
+
+        .dark-theme .spinner-border.text-dark {
+            color: #343a40 !important;
+        }
+
+        /* Dark mode text color overrides */
+        .dark-theme {
+            color: #e0e0e0;
+        }
+
+        .dark-theme h1,
+        .dark-theme h2,
+        .dark-theme h3,
+        .dark-theme h4,
+        .dark-theme h5,
+        .dark-theme h6 {
+            color: #ffffff;
+        }
+
+        .dark-theme .card-title {
+            color: #ffffff;
+        }
+
+        .dark-theme .text-muted {
+            color: #a0a0a0 !important;
+        }
+
+        .dark-theme .form-label {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .form-text {
+            color: #a0a0a0;
+        }
+
+        .dark-theme .form-control::placeholder {
+            color: #808080;
+        }
+
+        .dark-theme .btn-outline-primary {
+            color: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        .dark-theme .btn-outline-primary:hover {
+            background-color: #4a90e2;
+            color: #ffffff;
+        }
+
+        .dark-theme .btn-outline-success {
+            color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .dark-theme .btn-outline-success:hover {
+            background-color: #2ecc71;
+            color: #ffffff;
+        }
+
+        .dark-theme .btn-outline-warning {
+            color: #f1c40f;
+            border-color: #f1c40f;
+        }
+
+        .dark-theme .btn-outline-warning:hover {
+            background-color: #f1c40f;
+            color: #000000;
+        }
+
+        .dark-theme .btn-outline-danger {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .dark-theme .btn-outline-danger:hover {
+            background-color: #e74c3c;
+            color: #ffffff;
+        }
+
+        .dark-theme .btn-outline-dark {
+            color: #e0e0e0;
+            border-color: #3d3d3d;
+        }
+
+        .dark-theme .btn-outline-dark:hover {
+            background-color: #3d3d3d;
+            color: #ffffff;
+        }
+
+        .dark-theme .list-group-item {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .list-group-item:hover {
+            color: #ffffff;
+        }
+
+        .dark-theme .alert {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .alert-success {
+            color: #2ecc71;
+        }
+
+        .dark-theme .alert-warning {
+            color: #f1c40f;
+        }
+
+        .dark-theme .alert-danger {
+            color: #e74c3c;
+        }
+
+        .dark-theme .alert-info {
+            color: #3498db;
+        }
+
+        .dark-theme .table {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .table td,
+        .dark-theme .table th {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .table-hover tbody tr:hover {
+            color: #ffffff;
+        }
+
+        .dark-theme .dropdown-menu {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .dropdown-item {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .dropdown-item:hover {
+            color: #ffffff;
+        }
+
+        .dark-theme .nav-tabs .nav-link {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .nav-tabs .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .dark-theme .nav-tabs .nav-link.active {
+            color: #ffffff;
+        }
+
+        .dark-theme .modal-title {
+            color: #ffffff;
+        }
+
+        .dark-theme .modal-body {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .toast-header {
+            color: #ffffff;
+        }
+
+        .dark-theme .toast-body {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .popover-header {
+            color: #ffffff;
+        }
+
+        .dark-theme .popover-body {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .tooltip-inner {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .badge {
+            color: #ffffff;
+        }
+
+        .dark-theme .form-check-label {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .input-group-text {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .section-title {
+            color: #ffffff;
+        }
+
+        .dark-theme .card-header {
+            color: #ffffff;
+        }
+
+        .dark-theme .card-body {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .result-area {
+            color: #e0e0e0;
+        }
+
+        .dark-theme pre {
+            color: #e0e0e0;
+        }
+
+        .dark-theme .status-badge {
+            color: #ffffff;
+        }
+
+        .dark-theme .status-success {
+            color: #2ecc71;
+        }
+
+        .dark-theme .status-warning {
+            color: #f1c40f;
+        }
+
+        .dark-theme .status-danger {
+            color: #e74c3c;
+        }
+
+        .dark-theme .sidebar-menu-item {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dark-theme .sidebar-menu-item:hover {
+            color: #ffffff;
+        }
+
+        .dark-theme .sidebar-menu-item.active {
+            color: #ffffff;
+        }
+
+        .dark-theme .sidebar-toggle {
+            color: #ffffff;
+        }
+
+        .dark-theme .theme-toggle {
+            color: #4a90e2;
+        }
+
+        .dark-theme .theme-toggle:hover {
+            color: #ffffff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+        }
+
+        /* Add Top Bar Styles */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            transition: all var(--transition-speed);
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-theme .top-bar {
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .top-bar.expanded {
+            left: var(--sidebar-collapsed-width);
+        }
+
+        .theme-toggle {
+            position: relative;
+            top: auto;
+            right: auto;
+            z-index: auto;
+        }
+
+        /* Update Main Content for Top Bar */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 60px;
+            padding: 2rem;
+            transition: all var(--transition-speed);
+        }
+
+        /* Update Sidebar Header */
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+        }
+
+        .sidebar.collapsed .sidebar-header h3 {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .sidebar-logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            transition: all var(--transition-speed);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .sidebar.collapsed .sidebar-logo {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
-    <button class="btn btn-outline-primary theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-    </button>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Network Tool</h3>
+            <i class="fas fa-network-wired sidebar-logo"></i>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#system-setup" class="sidebar-menu-item active" onclick="scrollToSection('system-setup')">
+                <i class="fas fa-cogs"></i>
+                <span>System Setup</span>
+            </a>
+            <a href="#network-info" class="sidebar-menu-item" onclick="scrollToSection('network-info')">
+                <i class="fas fa-network-wired"></i>
+                <span>Network Information</span>
+            </a>
+            <a href="#system-info" class="sidebar-menu-item" onclick="scrollToSection('system-info')">
+                <i class="fas fa-desktop"></i>
+                <span>System Information</span>
+            </a>
+            <a href="#advanced-scanning" class="sidebar-menu-item" onclick="scrollToSection('advanced-scanning')">
+                <i class="fas fa-search"></i>
+                <span>Advanced Scanning</span>
+            </a>
+            <a href="#attack-simulation" class="sidebar-menu-item" onclick="scrollToSection('attack-simulation')">
+                <i class="fas fa-shield-virus"></i>
+                <span>Attack Simulation</span>
+            </a>
+            <a href="#network-mapping" class="sidebar-menu-item" onclick="scrollToSection('network-mapping')">
+                <i class="fas fa-network-wired"></i>
+                <span>Network Mapping</span>
+            </a>
+            <a href="#results" class="sidebar-menu-item" onclick="scrollToSection('results')">
+                <i class="fas fa-terminal"></i>
+                <span>Results</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
 
-    <div class="container py-5">
+    <!-- Top Bar -->
+    <div class="top-bar" id="top-bar">
+        <button class="btn btn-outline-primary theme-toggle" onclick="toggleTheme()" data-tooltip="Toggle Theme">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <div class="main-content" id="main-content">
         <h1 class="text-center mb-5">Network Mapping Tool</h1>
 
         <!-- System Setup -->
-        <div class="card mb-4">
+        <div id="system-setup" class="card mb-4">
             <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #2980b9);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-cogs me-2"></i>System Setup</h5>
             </div>
@@ -198,7 +1014,7 @@
 
         <div class="row">
             <!-- Network Information -->
-            <div class="col-md-6">
+            <div id="network-info" class="col-md-6">
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #3498db, #2980b9);">
                         <h5 class="card-title mb-0 text-white"><i class="fas fa-network-wired me-2"></i>Network Information</h5>
@@ -232,7 +1048,7 @@
             </div>
 
             <!-- System Information -->
-            <div class="col-md-6">
+            <div id="system-info" class="col-md-6">
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, var(--success-color), #27ae60);">
                         <h5 class="card-title mb-0 text-white"><i class="fas fa-desktop me-2"></i>System Information</h5>
@@ -261,7 +1077,7 @@
         </div>
 
         <!-- Advanced Scanning -->
-        <div class="card mt-4">
+        <div id="advanced-scanning" class="card mt-4">
             <div class="card-header" style="background: linear-gradient(135deg, var(--warning-color), #f39c12);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-search me-2"></i>Advanced Scanning</h5>
             </div>
@@ -293,7 +1109,7 @@
         </div>
 
         <!-- Network Attack Simulation -->
-        <div class="card mt-4">
+        <div id="attack-simulation" class="card mt-4">
             <div class="card-header" style="background: linear-gradient(135deg, var(--danger-color), #c0392b);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-shield-virus me-2"></i>Network Attack Simulation</h5>
             </div>
@@ -330,7 +1146,7 @@
         </div>
 
         <!-- Comprehensive Network Mapping -->
-        <div class="card mt-4">
+        <div id="network-mapping" class="card mt-4">
             <div class="card-header" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-network-wired me-2"></i>Comprehensive Network Mapping</h5>
             </div>
@@ -366,7 +1182,7 @@
         </div>
 
         <!-- Vulnerability Results Section -->
-        <div class="card mt-4" id="vulnerabilityResults" style="display: none;">
+        <div id="vulnerability-results" class="card mt-4" style="display: none;">
             <div class="card-header" style="background: linear-gradient(135deg, var(--danger-color), #c0392b);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-exclamation-triangle me-2"></i>Vulnerability Findings</h5>
             </div>
@@ -384,7 +1200,7 @@
         </div>
 
         <!-- Results Area -->
-        <div class="card mt-4">
+        <div id="results" class="card mt-4">
             <div class="card-header" style="background: linear-gradient(135deg, #7f8c8d, #95a5a6);">
                 <h5 class="card-title mb-0 text-white"><i class="fas fa-terminal me-2"></i>Results</h5>
             </div>
@@ -717,7 +1533,7 @@
         }
 
         function displayVulnerabilities(data) {
-            const vulnSection = document.getElementById('vulnerabilityResults');
+            const vulnSection = document.getElementById('vulnerability-results');
             const vulnSummary = document.getElementById('vulnSummary');
             const vulnFindings = document.getElementById('vulnFindings');
 
@@ -870,6 +1686,70 @@
 
         // Load attack types when the page loads
         document.addEventListener('DOMContentLoaded', loadAttackTypes);
+
+        // Add new sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const topBar = document.getElementById('top-bar');
+            const toggleIcon = document.querySelector('.sidebar-toggle i');
+
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            topBar.classList.toggle('expanded');
+            toggleIcon.classList.toggle('fa-chevron-left');
+            toggleIcon.classList.toggle('fa-chevron-right');
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+
+                // Update active menu item
+                document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[href="#${sectionId}"]`).classList.add('active');
+            }
+        }
+
+        // Handle mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+
+            if (window.innerWidth <= 768 &&
+                !sidebar.contains(event.target) &&
+                !sidebarToggle.contains(event.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Update active menu item on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('div[id]');
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    const sectionId = section.getAttribute('id');
+                    document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelector(`[href="#${sectionId}"]`)?.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
