@@ -83,3 +83,5 @@
 2025-03-19 12:57:41,930 - INFO -  * Restarting with stat
 2025-03-19 12:57:42,989 - WARNING -  * Debugger is active!
 2025-03-19 12:57:42,992 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 12:58:54,448 - INFO - 127.0.0.1 - - [19/Mar/2025 12:58:54] "GET /api/local-ip HTTP/1.1" 200 -
+2025-03-19 12:58:57,865 - INFO - 127.0.0.1 - - [19/Mar/2025 12:58:57] "GET /api/system-info HTTP/1.1" 200 -
