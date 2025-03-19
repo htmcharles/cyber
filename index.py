@@ -677,19 +677,19 @@ def api_scan_target():
 
             # Get WHOIS information
             try:
-                whois_info = whois.whois(target)
-                whois_details = {
-                    "registrar": whois_info.registrar,
-                    "creation_date": whois_info.creation_date,
-                    "expiration_date": whois_info.expiration_date,
-                    "registrant_name": whois_info.registrant_name,
-                    "registrant_organization": whois_info.registrant_organization,
-                    "registrant_country": whois_info.registrant_country,
-                    "name_servers": whois_info.name_servers,
-                    "status": whois_info.status
+                w = whois.whois(target)
+                whois_info = {
+                    "registrar": w.registrar,
+                    "creation_date": w.creation_date,
+                    "expiration_date": w.expiration_date,
+                    "registrant_name": w.registrant_name,
+                    "registrant_organization": w.registrant_organization,
+                    "registrant_country": w.registrant_country,
+                    "name_servers": w.name_servers,
+                    "status": w.status
                 }
             except Exception as e:
-                whois_details = {"error": f"Could not get WHOIS information: {str(e)}"}
+                whois_info = {"error": f"Could not get WHOIS information: {str(e)}"}
 
         except socket.gaierror as e:
             return jsonify({
@@ -702,7 +702,7 @@ def api_scan_target():
             "target": target,
             "ip": ip,
             "dns_info": dns_details,
-            "whois_info": whois_details,
+            "whois_info": whois_info,
             "timestamp": datetime.now().isoformat(),
             "ports": {},
             "os_info": {},

@@ -197,3 +197,12 @@
 2025-03-19 13:58:25,078 - INFO -  * Debugger PIN: 536-982-064
 2025-03-19 13:59:41,452 - INFO - 127.0.0.1 - - [19/Mar/2025 13:59:41] "GET / HTTP/1.1" 200 -
 2025-03-19 13:59:41,664 - INFO - 127.0.0.1 - - [19/Mar/2025 13:59:41] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 14:02:32,047 - INFO - 127.0.0.1 - - [19/Mar/2025 14:02:32] "[31m[1mPOST /api/scan-target HTTP/1.1[0m" 400 -
+2025-03-19 14:03:02,535 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 14:03:02,736 - INFO -  * Restarting with stat
+2025-03-19 14:03:04,152 - WARNING -  * Debugger is active!
+2025-03-19 14:03:04,156 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 14:03:40,442 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 14:03:40,654 - INFO -  * Restarting with stat
+2025-03-19 14:03:42,607 - WARNING -  * Debugger is active!
+2025-03-19 14:03:42,613 - INFO -  * Debugger PIN: 536-982-064
