@@ -92,6 +92,10 @@ COMMON_PORTS = {
     8080: 'HTTP-Proxy'
 }
 
+# Update the app configuration
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-secret-key')
+app.config['DEBUG'] = os.environ.get('FLASK_ENV') == 'development'
+
 def check_and_install_requirements():
     """Check and install required packages if not already installed."""
     required_packages = {
@@ -601,9 +605,15 @@ def generate_scan_report(scan_results, vuln_results):
         logger.error(f"Report generation failed: {str(e)}")
         return {"error": str(e)}
 
+# Add health check endpoint for Render
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
+# Serve index.html
 @app.route('/')
 def index():
-    return send_file('index.html')
+    return app.send_static_file('index.html')
 
 @app.route('/api/local-ip')
 def api_local_ip():
@@ -840,5 +850,6 @@ def api_generate_report():
     report = generate_scan_report(scan_results, vuln_results)
     return jsonify(report)
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

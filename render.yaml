@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: netsentry
+    env: python
+    region: oregon
+    plan: free
+    pythonVersion: 3.9.12
+    buildCommand: ./build.sh
+    startCommand: gunicorn --config gunicorn.conf.py index:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.9.12
+      - key: SECRET_KEY
+        sync: false
+    healthCheckPath: /health
