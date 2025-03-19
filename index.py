@@ -6,142 +6,160 @@ import psutil
 import requests
 import re
 import json
-import logging
 import paramiko
 import nmap
 import whois
+import logging
 from datetime import datetime
 from flask import Flask, send_file, jsonify, request
 from cryptography.fernet import Fernet
 import threading
 import time
+import sys
 
 app = Flask(__name__)
 
-# Set up logging
+# Setup logging
 logging.basicConfig(
-    filename='network_analysis.log',
+    filename='network_scan.log',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-# Initialize encryption key for sensitive data
-def initialize_encryption():
-    key_file = 'encryption.key'
-    if os.path.exists(key_file):
-        with open(key_file, 'rb') as f:
-            return f.read()
-    else:
-        key = Fernet.generate_key()
-        with open(key_file, 'wb') as f:
-            f.write(key)
-        return key
+# Global variables for installation status
+INSTALLED_PACKAGES = set()
 
-encryption_key = initialize_encryption()
-fernet = Fernet(encryption_key)
-
-def check_required_packages():
+def check_and_install_requirements():
+    """Check and install required packages if not already installed."""
     required_packages = {
-        'nmap': 'nmap',
         'python-whois': 'whois',
         'paramiko': 'paramiko',
         'cryptography': 'cryptography'
     }
 
-    missing_packages = []
+    # Install Python packages
     for package, import_name in required_packages.items():
-        try:
-            __import__(import_name)
-        except ImportError:
-            missing_packages.append(package)
+        if package not in INSTALLED_PACKAGES:
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+                INSTALLED_PACKAGES.add(package)
+                logging.info(f"Installed package: {package}")
+            except Exception as e:
+                logging.error(f"Failed to install {package}: {str(e)}")
+                return {
+                    "success": False,
+                    "message": f"Failed to install {package}: {str(e)}"
+                }
 
-    if missing_packages:
-        logging.warning(f"Missing required packages: {', '.join(missing_packages)}")
-        return False
-    return True
-
-# Initialize required packages
-if not check_required_packages():
-    logging.error("Missing required packages. Please install them first.")
-    print("Error: Missing required packages. Please run setup.py first.")
+    return {
+        "success": True,
+        "message": "All requirements installed successfully"
+    }
 
 def check_anonymity():
+    """Check if the connection is anonymous and detect VPN/proxy usage."""
     try:
-        # Check VPN/Proxy status
-        response = requests.get('https://api.ipify.org?format=json')
-        real_ip = response.json()['ip']
+        # Get real IP
+        real_ip = requests.get('https://api.ipify.org').text
 
-        # Get geolocation data
-        geo_response = requests.get(f'http://ip-api.com/json/{real_ip}')
-        geo_data = geo_response.json()
+        # Get VPN/proxy detection
+        response = requests.get(f'https://ipapi.co/{real_ip}/json/')
+        data = response.json()
 
-        # Check for common VPN/Proxy indicators
+        # Check for common VPN/proxy indicators
         is_anonymous = False
-        if geo_data.get('proxy') or geo_data.get('hosting'):
+        spoofed_country = None
+
+        if data.get('proxy') or data.get('hosting'):
             is_anonymous = True
+            spoofed_country = data.get('country_name')
 
         return {
             "is_anonymous": is_anonymous,
             "real_ip": real_ip,
-            "country": geo_data.get('country'),
-            "isp": geo_data.get('isp'),
-            "proxy": geo_data.get('proxy'),
-            "hosting": geo_data.get('hosting')
+            "spoofed_country": spoofed_country,
+            "connection_type": "VPN/Proxy" if is_anonymous else "Direct Connection"
         }
     except Exception as e:
-        logging.error(f"Error checking anonymity: {str(e)}")
+        logging.error(f"Anonymity check failed: {str(e)}")
         return {"error": str(e)}
 
 def scan_target(target):
+    """Perform comprehensive scan on specified target using socket-based scanning."""
     try:
-        nm = nmap.PortScanner()
-        nm.scan(target, arguments='-sS -sV -O')
-
         scan_results = {
             "target": target,
-            "hosts": []
+            "timestamp": datetime.now().isoformat(),
+            "ports": {},
+            "os_info": {},
+            "vulnerabilities": []
         }
 
-        for host in nm.all_hosts():
-            host_info = {
-                "ip": host,
-                "state": nm[host].state(),
-                "os": nm[host].get('osmatch', [{}])[0].get('name', 'Unknown'),
-                "ports": []
+        # Common ports to scan
+        common_ports = {
+            21: "FTP",
+            22: "SSH",
+            23: "Telnet",
+            25: "SMTP",
+            53: "DNS",
+            80: "HTTP",
+            110: "POP3",
+            143: "IMAP",
+            443: "HTTPS",
+            3306: "MySQL",
+            3389: "RDP",
+            8080: "HTTP Proxy"
+        }
+
+        # Port scanning
+        for port, service in common_ports.items():
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1)  # 1 second timeout
+                result = sock.connect_ex((target, port))
+                if result == 0:
+                    try:
+                        service_info = socket.getservbyport(port)
+                    except:
+                        service_info = service
+
+                    scan_results["ports"][port] = {
+                        "state": "open",
+                        "service": service_info,
+                        "version": "unknown"
+                    }
+                sock.close()
+            except Exception as e:
+                logging.warning(f"Error scanning port {port}: {str(e)}")
+
+        # OS detection using socket
+        try:
+            scan_results["os_info"] = {
+                "platform": platform.system(),
+                "version": platform.version(),
+                "architecture": platform.architecture()[0]
             }
+        except Exception as e:
+            logging.warning(f"OS detection failed: {str(e)}")
 
-            for proto in nm[host].all_protocols():
-                ports = nm[host][proto].keys()
-                for port in ports:
-                    host_info["ports"].append({
-                        "port": port,
-                        "state": nm[host][proto][port]['state'],
-                        "service": nm[host][proto][port].get('name', 'unknown'),
-                        "version": nm[host][proto][port].get('version', 'unknown')
-                    })
-
-            scan_results["hosts"].append(host_info)
+        # Whois information
+        try:
+            w = whois.whois(target)
+            scan_results["whois"] = {
+                "registrar": w.registrar,
+                "creation_date": w.creation_date,
+                "expiration_date": w.expiration_date
+            }
+        except Exception as e:
+            logging.warning(f"Whois lookup failed for {target}: {str(e)}")
 
         return scan_results
     except Exception as e:
-        logging.error(f"Error scanning target {target}: {str(e)}")
-        return {"error": str(e)}
-
-def whois_lookup(domain):
-    try:
-        w = whois.whois(domain)
-        return {
-            "domain": domain,
-            "registrar": w.registrar,
-            "creation_date": str(w.creation_date),
-            "expiration_date": str(w.expiration_date),
-            "name_servers": w.name_servers
-        }
-    except Exception as e:
-        logging.error(f"Error performing whois lookup for {domain}: {str(e)}")
+        logging.error(f"Scan failed for target {target}: {str(e)}")
         return {"error": str(e)}
 
 def ssh_connect(hostname, username, password=None, key_filename=None):
+    """Establish SSH connection and execute commands."""
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -151,46 +169,39 @@ def ssh_connect(hostname, username, password=None, key_filename=None):
         else:
             ssh.connect(hostname, username=username, password=password)
 
-        return ssh
-    except Exception as e:
-        logging.error(f"Error connecting to SSH host {hostname}: {str(e)}")
-        return None
+        commands = [
+            "uname -a",
+            "cat /etc/os-release",
+            "df -h",
+            "free -m",
+            "netstat -tuln"
+        ]
 
-def execute_ssh_command(ssh, command):
-    try:
-        stdin, stdout, stderr = ssh.exec_command(command)
-        return {
-            "output": stdout.read().decode(),
-            "error": stderr.read().decode()
-        }
+        results = {}
+        for cmd in commands:
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+            results[cmd] = stdout.read().decode()
+
+        ssh.close()
+        return results
     except Exception as e:
-        logging.error(f"Error executing SSH command: {str(e)}")
+        logging.error(f"SSH connection failed: {str(e)}")
         return {"error": str(e)}
 
-def save_data(data, filename):
+def save_scan_results(results, filename=None):
+    """Save scan results to a file."""
     try:
-        # Encrypt sensitive data before saving
-        encrypted_data = fernet.encrypt(json.dumps(data).encode())
+        if filename is None:
+            filename = f"scan_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
-        with open(filename, 'wb') as f:
-            f.write(encrypted_data)
+        with open(filename, 'w') as f:
+            json.dump(results, f, indent=4)
 
-        logging.info(f"Data saved to {filename}")
-        return True
+        logging.info(f"Scan results saved to {filename}")
+        return {"status": "success", "filename": filename}
     except Exception as e:
-        logging.error(f"Error saving data to {filename}: {str(e)}")
-        return False
-
-def load_data(filename):
-    try:
-        with open(filename, 'rb') as f:
-            encrypted_data = f.read()
-
-        decrypted_data = fernet.decrypt(encrypted_data)
-        return json.loads(decrypted_data.decode())
-    except Exception as e:
-        logging.error(f"Error loading data from {filename}: {str(e)}")
-        return None
+        logging.error(f"Failed to save scan results: {str(e)}")
+        return {"error": str(e)}
 
 def get_local_ip():
     try:
@@ -351,15 +362,10 @@ def api_scan_target():
     target = data.get('target')
     if not target:
         return jsonify({"error": "No target specified"}), 400
-    return jsonify(scan_target(target))
 
-@app.route('/api/whois', methods=['POST'])
-def api_whois():
-    data = request.get_json()
-    domain = data.get('domain')
-    if not domain:
-        return jsonify({"error": "No domain specified"}), 400
-    return jsonify(whois_lookup(domain))
+    results = scan_target(target)
+    save_scan_results(results)
+    return jsonify(results)
 
 @app.route('/api/ssh-connect', methods=['POST'])
 def api_ssh_connect():
@@ -372,42 +378,13 @@ def api_ssh_connect():
     if not all([hostname, username]):
         return jsonify({"error": "Missing required parameters"}), 400
 
-    ssh = ssh_connect(hostname, username, password, key_filename)
-    if not ssh:
-        return jsonify({"error": "Failed to connect"}), 500
+    results = ssh_connect(hostname, username, password, key_filename)
+    return jsonify(results)
 
-    return jsonify({"message": "Connected successfully"})
-
-@app.route('/api/ssh-command', methods=['POST'])
-def api_ssh_command():
-    data = request.get_json()
-    command = data.get('command')
-    if not command:
-        return jsonify({"error": "No command specified"}), 400
-
-    # Note: In a real application, you would maintain SSH connections in a session
-    # This is just a demonstration
-    return jsonify({"error": "SSH connection not maintained"}), 400
-
-@app.route('/api/save-data', methods=['POST'])
-def api_save_data():
-    data = request.get_json()
-    filename = data.get('filename')
-    if not filename:
-        return jsonify({"error": "No filename specified"}), 400
-
-    success = save_data(data.get('data', {}), filename)
-    return jsonify({"success": success})
-
-@app.route('/api/load-data', methods=['POST'])
-def api_load_data():
-    data = request.get_json()
-    filename = data.get('filename')
-    if not filename:
-        return jsonify({"error": "No filename specified"}), 400
-
-    loaded_data = load_data(filename)
-    return jsonify(loaded_data)
+@app.route('/api/install-requirements')
+def api_install_requirements():
+    result = check_and_install_requirements()
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

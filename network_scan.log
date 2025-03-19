@@ -1,0 +1,85 @@
+2025-03-19 11:34:55,116 - WARNING -  * Debugger is active!
+2025-03-19 11:34:55,120 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 11:34:56,404 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 11:34:57,460 - WARNING -  * Debugger is active!
+2025-03-19 11:34:57,463 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 11:36:39,901 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.12.75.194:5000
+2025-03-19 11:36:39,901 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 11:36:39,903 - INFO -  * Restarting with stat
+2025-03-19 11:36:40,604 - WARNING -  * Debugger is active!
+2025-03-19 11:36:40,606 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 11:36:57,874 - INFO - 127.0.0.1 - - [19/Mar/2025 11:36:57] "GET / HTTP/1.1" 200 -
+2025-03-19 11:37:04,782 - INFO - Installed package: python-nmap
+2025-03-19 11:37:06,319 - INFO - Installed package: python-whois
+2025-03-19 11:37:07,831 - INFO - Installed package: paramiko
+2025-03-19 11:37:09,346 - INFO - Installed package: cryptography
+2025-03-19 11:37:09,347 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:09] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 11:37:09,349 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:09] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 11:37:09,670 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:09] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 11:37:09,977 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:09] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 11:37:24,811 - ERROR - Scan failed for target google.com: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 11:37:24,814 - INFO - Scan results saved to scan_results_20250319_113724.json
+2025-03-19 11:37:24,814 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:24] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 11:37:42,202 - ERROR - Scan failed for target youtube.com: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 11:37:42,204 - INFO - Scan results saved to scan_results_20250319_113742.json
+2025-03-19 11:37:42,205 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:42] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 11:37:44,241 - ERROR - Scan failed for target youtube.com: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 11:37:44,243 - INFO - Scan results saved to scan_results_20250319_113744.json
+2025-03-19 11:37:44,243 - INFO - 127.0.0.1 - - [19/Mar/2025 11:37:44] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 11:38:06,920 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 11:38:07,068 - INFO -  * Restarting with stat
+2025-03-19 11:38:08,199 - WARNING -  * Debugger is active!
+2025-03-19 11:38:08,202 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 11:38:09,421 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 11:38:09,599 - INFO -  * Restarting with stat
+2025-03-19 11:38:10,565 - WARNING -  * Debugger is active!
+2025-03-19 11:38:10,567 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 12:50:19,216 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.12.75.194:5000
+2025-03-19 12:50:19,216 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 12:50:19,223 - INFO -  * Restarting with stat
+2025-03-19 12:50:20,424 - WARNING -  * Debugger is active!
+2025-03-19 12:50:20,501 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 12:50:25,095 - INFO - 127.0.0.1 - - [19/Mar/2025 12:50:25] "GET / HTTP/1.1" 200 -
+2025-03-19 12:50:35,935 - ERROR - Scan failed for target instagram.com: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 12:50:35,939 - INFO - Scan results saved to scan_results_20250319_125035.json
+2025-03-19 12:50:35,940 - INFO - 127.0.0.1 - - [19/Mar/2025 12:50:35] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 12:53:56,312 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.12.75.194:5000
+2025-03-19 12:53:56,312 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 12:53:56,314 - INFO -  * Restarting with stat
+2025-03-19 12:53:57,284 - WARNING -  * Debugger is active!
+2025-03-19 12:53:57,287 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 12:54:05,770 - INFO - 127.0.0.1 - - [19/Mar/2025 12:54:05] "GET /api/connection-type HTTP/1.1" 200 -
+2025-03-19 12:54:07,801 - ERROR - Scan failed for target youtube.com: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 12:54:07,806 - INFO - Scan results saved to scan_results_20250319_125407.json
+2025-03-19 12:54:07,807 - INFO - 127.0.0.1 - - [19/Mar/2025 12:54:07] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 12:55:36,898 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.12.75.194:5000
+2025-03-19 12:55:36,898 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 12:55:36,900 - INFO -  * Restarting with stat
+2025-03-19 12:55:37,992 - WARNING -  * Debugger is active!
+2025-03-19 12:55:37,995 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 12:55:58,267 - INFO - 127.0.0.1 - - [19/Mar/2025 12:55:58] "GET /api/local-ip HTTP/1.1" 200 -
+2025-03-19 12:56:08,846 - ERROR - Failed to save scan results: Object of type datetime is not JSON serializable
+2025-03-19 12:56:08,847 - INFO - 127.0.0.1 - - [19/Mar/2025 12:56:08] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 12:56:15,617 - ERROR - Failed to save scan results: Object of type datetime is not JSON serializable
+2025-03-19 12:56:15,618 - INFO - 127.0.0.1 - - [19/Mar/2025 12:56:15] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 12:56:44,118 - INFO - Installed package: python-whois
+2025-03-19 12:56:46,310 - INFO - Installed package: paramiko
+2025-03-19 12:56:48,240 - INFO - Installed package: cryptography
+2025-03-19 12:56:48,241 - INFO - 127.0.0.1 - - [19/Mar/2025 12:56:48] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 12:56:48,244 - INFO - 127.0.0.1 - - [19/Mar/2025 12:56:48] "GET /api/install-requirements HTTP/1.1" 200 -
+2025-03-19 12:57:41,805 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 12:57:41,930 - INFO -  * Restarting with stat
+2025-03-19 12:57:42,989 - WARNING -  * Debugger is active!
+2025-03-19 12:57:42,992 - INFO -  * Debugger PIN: 536-982-064
