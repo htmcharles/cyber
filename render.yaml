@@ -16,6 +16,8 @@ services:
         sync: false
       - key: CRYPTOGRAPHY_DONT_BUILD_RUST
         value: "1"
+      - key: BCRYPT_DONT_BUILD_RUST
+        value: "1"
       - key: PIP_NO_CACHE_DIR
         value: "1"
       - key: PIP_PREFER_BINARY
