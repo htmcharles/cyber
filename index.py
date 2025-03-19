@@ -675,22 +675,6 @@ def api_scan_target():
             except:
                 dns_details = {"error": "Could not get detailed DNS information"}
 
-            # Get WHOIS information
-            try:
-                w = whois.whois(target)
-                whois_info = {
-                    "registrar": w.registrar,
-                    "creation_date": w.creation_date,
-                    "expiration_date": w.expiration_date,
-                    "registrant_name": w.registrant_name,
-                    "registrant_organization": w.registrant_organization,
-                    "registrant_country": w.registrant_country,
-                    "name_servers": w.name_servers,
-                    "status": w.status
-                }
-            except Exception as e:
-                whois_info = {"error": f"Could not get WHOIS information: {str(e)}"}
-
         except socket.gaierror as e:
             return jsonify({
                 "error": f"Could not resolve domain: {target}",
@@ -702,7 +686,6 @@ def api_scan_target():
             "target": target,
             "ip": ip,
             "dns_info": dns_details,
-            "whois_info": whois_info,
             "timestamp": datetime.now().isoformat(),
             "ports": {},
             "os_info": {},
