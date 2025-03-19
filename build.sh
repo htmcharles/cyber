@@ -6,6 +6,8 @@ set -o errexit
 python -m pip install --upgrade pip
 python -m pip install --upgrade setuptools wheel
 
-# Install dependencies with specific options for cryptography
-export CRYPTOGRAPHY_DONT_BUILD_RUST=1
+# Install cryptography separately with pre-built wheels
+pip install --no-cache-dir cryptography==41.0.7 --no-binary cryptography
+
+# Install remaining dependencies
 pip install --no-cache-dir -r requirements.txt
