@@ -182,6 +182,60 @@
             </div>
         </div>
 
+        <!-- Comprehensive Network Mapping -->
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-network-wired me-2"></i>Comprehensive Network Mapping</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Network Range Scan</h6>
+                        <div class="form-group mb-3">
+                            <label>Network Range:</label>
+                            <input type="text" id="networkRange" class="form-control" placeholder="e.g., 192.168.1.0/24">
+                            <small class="text-muted">Enter CIDR notation or IP range</small>
+                        </div>
+                        <button class="btn btn-dark" onclick="scanNetwork()">
+                            <i class="fas fa-search me-2"></i>Scan Network
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Vulnerability Assessment</h6>
+                        <div class="form-group mb-3">
+                            <label>Target Host:</label>
+                            <input type="text" id="vulnTarget" class="form-control" placeholder="Enter target IP">
+                        </div>
+                        <button class="btn btn-dark" onclick="scanVulnerabilities()">
+                            <i class="fas fa-shield-virus me-2"></i>Scan Vulnerabilities
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h6>Scan Results</h6>
+                    <div id="scanResults" class="result-area"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vulnerability Results Section -->
+        <div class="card mt-4" id="vulnerabilityResults" style="display: none;">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Vulnerability Findings</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            <h6>Summary</h6>
+                            <p id="vulnSummary"></p>
+                        </div>
+                        <div id="vulnFindings"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Results Area -->
         <div class="card mt-4">
             <div class="card-header bg-secondary text-white">
@@ -270,7 +324,79 @@
                     body: JSON.stringify({ target }),
                 });
                 const data = await response.json();
-                resultArea.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+                if (data.error) {
+                    resultArea.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    let html = `
+                        <div class="alert alert-success">
+                            <h5>Scan Results for ${target}</h5>
+                            <p>Scan Time: ${new Date(data.timestamp).toLocaleString()}</p>
+                        </div>`;
+
+                    // Display ports
+                    if (data.ports && Object.keys(data.ports).length > 0) {
+                        html += `
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Open Ports</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">`;
+
+                        for (const [port, info] of Object.entries(data.ports)) {
+                            html += `
+                                <li class="list-group-item">
+                                    <strong>Port ${port}:</strong> ${info.service}
+                                    <br><small>State: ${info.state}</small>
+                                    ${info.banner ? `<br><small>Banner: ${info.banner}</small>` : ''}
+                                </li>`;
+                        }
+
+                        html += `
+                                    </ul>
+                                </div>
+                            </div>`;
+                    }
+
+                    // Display OS information
+                    if (data.os_info) {
+                        html += `
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Operating System Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <pre>${JSON.stringify(data.os_info, null, 2)}</pre>
+                                </div>
+                            </div>`;
+                    }
+
+                    // Display vulnerabilities if any
+                    if (data.vulnerabilities && data.vulnerabilities.length > 0) {
+                        html += `
+                            <div class="card mb-3">
+                                <div class="card-header bg-danger text-white">
+                                    <h6 class="mb-0">Vulnerabilities Found</h6>
+                                </div>
+                                <div class="card-body">`;
+
+                        data.vulnerabilities.forEach(vuln => {
+                            html += `
+                                <div class="alert alert-warning">
+                                    <h6>${vuln.description}</h6>
+                                    <p class="mb-1"><small>Type: ${vuln.type}</small></p>
+                                    ${vuln.severity ? `<p class="mb-1"><small>Severity: ${vuln.severity}</small></p>` : ''}
+                                </div>`;
+                        });
+
+                        html += `
+                                </div>
+                            </div>`;
+                    }
+
+                    resultArea.innerHTML = html;
+                }
             } catch (error) {
                 resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
             } finally {
@@ -430,6 +556,158 @@
                 }
             } catch (error) {
                 resultArea.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayVulnerabilities(data) {
+            const vulnSection = document.getElementById('vulnerabilityResults');
+            const vulnSummary = document.getElementById('vulnSummary');
+            const vulnFindings = document.getElementById('vulnFindings');
+
+            vulnSection.style.display = 'block';
+
+            // Display summary
+            vulnSummary.innerHTML = `
+                <p>Total Findings: ${data.findings.length}</p>
+                <p>Target: ${data.target}</p>
+                <p>Scan Time: ${new Date(data.timestamp).toLocaleString()}</p>
+            `;
+
+            // Display findings
+            let findingsHtml = '<div class="row">';
+
+            // Group findings by severity
+            const findingsBySeverity = {
+                'High': [],
+                'Medium': [],
+                'Low': [],
+                'Info': []
+            };
+
+            data.findings.forEach(finding => {
+                const severity = finding.severity || 'Info';
+                findingsBySeverity[severity].push(finding);
+            });
+
+            // Display findings by severity
+            Object.entries(findingsBySeverity).forEach(([severity, findings]) => {
+                if (findings.length > 0) {
+                    findingsHtml += `
+                        <div class="col-md-12 mb-3">
+                            <div class="card border-${getSeverityColor(severity)}">
+                                <div class="card-header bg-${getSeverityColor(severity)} text-white">
+                                    <h6 class="mb-0">${severity} Severity Issues (${findings.length})</h6>
+                                </div>
+                                <div class="card-body">`;
+
+                    findings.forEach(finding => {
+                        findingsHtml += `
+                            <div class="mb-3">
+                                <h6>${finding.description}</h6>
+                                <p class="mb-1"><small>Type: ${finding.type}</small></p>
+                                ${finding.port ? `<p class="mb-1"><small>Port: ${finding.port}</small></p>` : ''}
+                                ${finding.service ? `<p class="mb-1"><small>Service: ${finding.service}</small></p>` : ''}
+                                ${finding.os ? `<p class="mb-1"><small>OS: ${finding.os}</small></p>` : ''}
+                            </div>`;
+                    });
+
+                    findingsHtml += `
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            findingsHtml += '</div>';
+            vulnFindings.innerHTML = findingsHtml;
+        }
+
+        function getSeverityColor(severity) {
+            switch(severity.toLowerCase()) {
+                case 'high':
+                    return 'danger';
+                case 'medium':
+                    return 'warning';
+                case 'low':
+                    return 'info';
+                default:
+                    return 'secondary';
+            }
+        }
+
+        async function scanVulnerabilities() {
+            const target = document.getElementById('vulnTarget').value;
+            if (!target) {
+                alert('Please enter a target IP');
+                return;
+            }
+
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/scan-vulnerabilities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ target }),
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    displayVulnerabilities(data);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function scanNetwork() {
+            const networkRange = document.getElementById('networkRange').value;
+            if (!networkRange) {
+                alert('Please enter a network range');
+                return;
+            }
+
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/scan-network', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ network_range: networkRange }),
+                });
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Display network scan results
+                    displayNetworkResults(data);
+
+                    // Display vulnerabilities for each host
+                    Object.values(data.hosts).forEach(host => {
+                        if (host.vulnerabilities && host.vulnerabilities.length > 0) {
+                            displayVulnerabilities({
+                                target: host.ip,
+                                timestamp: data.timestamp,
+                                findings: host.vulnerabilities
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
             } finally {
                 loading.style.display = 'none';
             }
