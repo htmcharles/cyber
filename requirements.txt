@@ -9,10 +9,10 @@ paramiko==3.3.1
 psutil==5.9.5
 requests==2.31.0
 python-whois==0.8.0
-cryptography==42.0.2
+cryptography==41.0.7
 gunicorn==21.2.0
 gevent==23.9.1
-greenlet==3.0.3
-setuptools==69.1.1
-wheel==0.42.0
+greenlet==3.0.1
+setuptools==68.2.2
+wheel==0.41.2
 bcrypt==4.0.1

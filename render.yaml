@@ -4,14 +4,14 @@ services:
     env: python
     region: oregon
     plan: free
-    pythonVersion: 3.9.12
+    pythonVersion: 3.9.18
     buildCommand: ./build.sh
     startCommand: gunicorn --config gunicorn.conf.py index:app
     envVars:
       - key: FLASK_ENV
         value: production
       - key: PYTHON_VERSION
-        value: 3.9.12
+        value: 3.9.18
       - key: SECRET_KEY
         sync: false
     healthCheckPath: /health
