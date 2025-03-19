@@ -17,6 +17,11 @@ from flask import Flask, send_file, jsonify, request
 from cryptography.fernet import Fernet
 import threading
 import sys
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+import ipaddress
+import struct
+from typing import Dict, List, Optional
 
 app = Flask(__name__)
 
@@ -50,6 +55,26 @@ NETWORK_ATTACKS = {
         "command": "nmap -T4 -F {target}",
         "duration": 10
     }
+}
+
+# Add new constants after the existing ones
+SCAN_RESULTS_DIR = "scan_results"
+VULNERABILITY_DATABASE = "vulnerability_database.json"
+
+# Add new constants
+COMMON_PORTS = {
+    21: 'FTP',
+    22: 'SSH',
+    23: 'Telnet',
+    25: 'SMTP',
+    53: 'DNS',
+    80: 'HTTP',
+    110: 'POP3',
+    143: 'IMAP',
+    443: 'HTTPS',
+    3306: 'MySQL',
+    3389: 'RDP',
+    8080: 'HTTP-Proxy'
 }
 
 def check_and_install_requirements():
@@ -107,78 +132,210 @@ def check_anonymity():
         logging.error(f"Anonymity check failed: {str(e)}")
         return {"error": str(e)}
 
-def scan_target(target):
-    """Perform comprehensive scan on specified target using socket-based scanning."""
+def scan_port(ip: str, port: int, timeout: float = 1.0) -> Optional[Dict]:
+    """Scan a single port and return service information if open."""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((ip, port))
+        if result == 0:
+            try:
+                service = socket.getservbyport(port)
+                banner = ""
+                try:
+                    sock.send(b"HEAD / HTTP/1.0\r\n\r\n")
+                    banner = sock.recv(1024).decode('utf-8', errors='ignore')
+                except:
+                    pass
+                return {
+                    "port": port,
+                    "state": "open",
+                    "service": service,
+                    "banner": banner
+                }
+            except:
+                return {
+                    "port": port,
+                    "state": "open",
+                    "service": "unknown"
+                }
+        return None
+    except:
+        return None
+    finally:
+        sock.close()
+
+def scan_host(ip: str) -> Dict:
+    """Perform a comprehensive scan of a single host."""
+    host_info = {
+        "ip": ip,
+        "hostname": "",
+        "state": "unknown",
+        "ports": {},
+        "os_info": {},
+        "vulnerabilities": []
+    }
+
+    try:
+        # Get hostname
+        host_info["hostname"] = socket.gethostbyaddr(ip)[0]
+    except:
+        host_info["hostname"] = "Unknown"
+
+    # Scan ports using thread pool
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_port = {executor.submit(scan_port, ip, port): port for port in COMMON_PORTS.keys()}
+        for future in concurrent.futures.as_completed(future_to_port):
+            result = future.result()
+            if result:
+                host_info["ports"][result["port"]] = result
+
+    # Basic OS detection using TTL
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        sock.connect((ip, 80))
+        ttl = struct.unpack('!B', sock.getsockopt(socket.IPPROTO_IP, socket.IP_TTL, 1)[0])[0]
+        if ttl <= 64:
+            host_info["os_info"]["type"] = "Linux/Unix"
+        else:
+            host_info["os_info"]["type"] = "Windows"
+    except:
+        host_info["os_info"]["type"] = "Unknown"
+
+    # Check for common vulnerabilities
+    vulnerabilities = check_common_vulnerabilities(ip, host_info["ports"])
+    host_info["vulnerabilities"] = vulnerabilities
+
+    return host_info
+
+def check_common_vulnerabilities(ip: str, ports: Dict) -> List[Dict]:
+    """Check for common vulnerabilities based on open ports and services."""
+    vulnerabilities = []
+
+    # Check for weak SSH configuration
+    if 22 in ports:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(2)
+            sock.connect((ip, 22))
+            banner = sock.recv(1024).decode('utf-8', errors='ignore')
+            if "OpenSSH" in banner and "7.0" in banner:
+                vulnerabilities.append({
+                    "type": "SSH",
+                    "description": "Potentially outdated OpenSSH version",
+                    "severity": "Medium"
+                })
+        except:
+            pass
+
+    # Check for weak HTTP configuration
+    if 80 in ports or 443 in ports:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(2)
+            port = 443 if 443 in ports else 80
+            sock.connect((ip, port))
+            sock.send(b"HEAD / HTTP/1.0\r\n\r\n")
+            response = sock.recv(1024).decode('utf-8', errors='ignore')
+            if "Server:" in response:
+                server = response.split("Server:")[1].split("\r\n")[0].strip()
+                if "Apache/2.4.49" in server or "Apache/2.4.50" in server:
+                    vulnerabilities.append({
+                        "type": "HTTP",
+                        "description": "Potentially vulnerable Apache version",
+                        "severity": "High"
+                    })
+        except:
+            pass
+
+    return vulnerabilities
+
+def scan_network_range(network_range: str) -> Dict:
+    """Perform comprehensive network scan using pure Python."""
     try:
         scan_results = {
-            "target": target,
             "timestamp": datetime.now().isoformat(),
-            "ports": {},
-            "os_info": {},
-            "vulnerabilities": []
+            "network_range": network_range,
+            "hosts": {},
+            "summary": {}
         }
 
-        # Common ports to scan
-        common_ports = {
-            21: "FTP",
-            22: "SSH",
-            23: "Telnet",
-            25: "SMTP",
-            53: "DNS",
-            80: "HTTP",
-            110: "POP3",
-            143: "IMAP",
-            443: "HTTPS",
-            3306: "MySQL",
-            3389: "RDP",
-            8080: "HTTP Proxy"
-        }
-
-        # Port scanning
-        for port, service in common_ports.items():
-            try:
-                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock.settimeout(1)  # 1 second timeout
-                result = sock.connect_ex((target, port))
-                if result == 0:
-                    try:
-                        service_info = socket.getservbyport(port)
-                    except:
-                        service_info = service
-
-                    scan_results["ports"][port] = {
-                        "state": "open",
-                        "service": service_info,
-                        "version": "unknown"
-                    }
-                sock.close()
-            except Exception as e:
-                logging.warning(f"Error scanning port {port}: {str(e)}")
-
-        # OS detection using socket
+        # Parse network range
         try:
-            scan_results["os_info"] = {
-                "platform": platform.system(),
-                "version": platform.version(),
-                "architecture": platform.architecture()[0]
-            }
-        except Exception as e:
-            logging.warning(f"OS detection failed: {str(e)}")
+            network = ipaddress.ip_network(network_range)
+        except ValueError:
+            return {"error": "Invalid network range format"}
 
-        # Whois information
-        try:
-            w = whois.whois(target)
-            scan_results["whois"] = {
-                "registrar": w.registrar,
-                "creation_date": w.creation_date,
-                "expiration_date": w.expiration_date
-            }
-        except Exception as e:
-            logging.warning(f"Whois lookup failed for {target}: {str(e)}")
+        # Scan hosts using thread pool
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            future_to_ip = {executor.submit(scan_host, str(ip)): str(ip) for ip in network.hosts()}
+            for future in concurrent.futures.as_completed(future_to_ip):
+                host_info = future.result()
+                if host_info["ports"]:  # Only include hosts with open ports
+                    scan_results["hosts"][host_info["ip"]] = host_info
+
+        scan_results["summary"]["total_hosts"] = len(scan_results["hosts"])
+
+        # Save results
+        filename = f"{SCAN_RESULTS_DIR}/network_scan_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(filename, 'w') as f:
+            json.dump(scan_results, f, indent=4)
 
         return scan_results
     except Exception as e:
-        logging.error(f"Scan failed for target {target}: {str(e)}")
+        logging.error(f"Network scan failed: {str(e)}")
+        return {"error": str(e)}
+
+def scan_vulnerabilities(target: str) -> Dict:
+    """Perform vulnerability scanning using pure Python."""
+    try:
+        vulnerabilities = {
+            "timestamp": datetime.now().isoformat(),
+            "target": target,
+            "findings": []
+        }
+
+        # Perform host scan
+        host_info = scan_host(target)
+
+        # Add port-based vulnerabilities
+        for port, info in host_info["ports"].items():
+            if info["state"] == "open":
+                vulnerabilities["findings"].append({
+                    "tool": "port_scan",
+                    "type": "open_port",
+                    "port": port,
+                    "service": info["service"],
+                    "description": f"Open port {port} running {info['service']}"
+                })
+
+        # Add OS-based vulnerabilities
+        if host_info["os_info"].get("type"):
+            vulnerabilities["findings"].append({
+                "tool": "os_detection",
+                "type": "os_info",
+                "os": host_info["os_info"]["type"],
+                "description": f"Detected OS: {host_info['os_info']['type']}"
+            })
+
+        # Add service-specific vulnerabilities
+        for vuln in host_info["vulnerabilities"]:
+            vulnerabilities["findings"].append({
+                "tool": "service_check",
+                "type": "vulnerability",
+                "description": vuln["description"],
+                "severity": vuln["severity"]
+            })
+
+        # Save vulnerability results
+        filename = f"{SCAN_RESULTS_DIR}/vuln_scan_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(filename, 'w') as f:
+            json.dump(vulnerabilities, f, indent=4)
+
+        return vulnerabilities
+    except Exception as e:
+        logging.error(f"Vulnerability scan failed: {str(e)}")
         return {"error": str(e)}
 
 def ssh_connect(hostname, username, password=None, key_filename=None):
@@ -399,6 +556,36 @@ def get_random_attack():
     """Get a random attack type from the available attacks."""
     return random.choice(list(NETWORK_ATTACKS.keys()))
 
+def create_scan_directory():
+    """Create directory for storing scan results if it doesn't exist."""
+    if not os.path.exists(SCAN_RESULTS_DIR):
+        os.makedirs(SCAN_RESULTS_DIR)
+        logging.info(f"Created scan results directory: {SCAN_RESULTS_DIR}")
+
+def generate_scan_report(scan_results, vuln_results):
+    """Generate a comprehensive scan report."""
+    try:
+        report = {
+            "timestamp": datetime.now().isoformat(),
+            "summary": {
+                "total_hosts": scan_results.get("summary", {}).get("total_hosts", 0),
+                "vulnerabilities_found": len(vuln_results.get("findings", [])),
+                "scan_duration": "N/A"  # Could be calculated from timestamps
+            },
+            "hosts": scan_results.get("hosts", {}),
+            "vulnerabilities": vuln_results.get("findings", [])
+        }
+
+        # Save report
+        filename = f"{SCAN_RESULTS_DIR}/scan_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(filename, 'w') as f:
+            json.dump(report, f, indent=4)
+
+        return report
+    except Exception as e:
+        logging.error(f"Report generation failed: {str(e)}")
+        return {"error": str(e)}
+
 @app.route('/')
 def index():
     return send_file('index.html')
@@ -455,12 +642,110 @@ def api_check_anonymity():
 def api_scan_target():
     data = request.get_json()
     target = data.get('target')
+
     if not target:
         return jsonify({"error": "No target specified"}), 400
 
-    results = scan_target(target)
-    save_scan_results(results)
-    return jsonify(results)
+    try:
+        # Enhanced domain resolution
+        try:
+            # Try to resolve domain to IP
+            ip = socket.gethostbyname(target)
+
+            # Get additional DNS information
+            try:
+                dns_info = socket.getaddrinfo(target, None)
+                dns_details = {
+                    "ipv4": [],
+                    "ipv6": [],
+                    "aliases": []
+                }
+
+                for addr in dns_info:
+                    if addr[0] == socket.AF_INET:
+                        dns_details["ipv4"].append(addr[4][0])
+                    elif addr[0] == socket.AF_INET6:
+                        dns_details["ipv6"].append(addr[4][0])
+
+                # Get domain aliases
+                try:
+                    dns_details["aliases"] = socket.gethostbyaddr(ip)[1]
+                except:
+                    pass
+            except:
+                dns_details = {"error": "Could not get detailed DNS information"}
+
+        except socket.gaierror as e:
+            return jsonify({
+                "error": f"Could not resolve domain: {target}",
+                "details": str(e),
+                "suggestion": "Please check if the domain is correct and if you have an active internet connection"
+            }), 400
+
+        scan_results = {
+            "target": target,
+            "ip": ip,
+            "dns_info": dns_details,
+            "timestamp": datetime.now().isoformat(),
+            "ports": {},
+            "os_info": {},
+            "vulnerabilities": []
+        }
+
+        # Port scanning
+        for port, service in COMMON_PORTS.items():
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1)
+                result = sock.connect_ex((ip, port))
+                if result == 0:
+                    try:
+                        service_info = socket.getservbyport(port)
+                        banner = ""
+                        try:
+                            sock.send(b"HEAD / HTTP/1.0\r\n\r\n")
+                            banner = sock.recv(1024).decode('utf-8', errors='ignore')
+                        except:
+                            pass
+                        scan_results["ports"][port] = {
+                            "state": "open",
+                            "service": service_info,
+                            "banner": banner
+                        }
+                    except:
+                        scan_results["ports"][port] = {
+                            "state": "open",
+                            "service": service
+                        }
+                sock.close()
+            except Exception as e:
+                logging.warning(f"Error scanning port {port}: {str(e)}")
+
+        # OS detection using TTL
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            sock.connect((ip, 80))
+            ttl = struct.unpack('!B', sock.getsockopt(socket.IPPROTO_IP, socket.IP_TTL, 1)[0])[0]
+            if ttl <= 64:
+                scan_results["os_info"]["type"] = "Linux/Unix"
+            else:
+                scan_results["os_info"]["type"] = "Windows"
+        except:
+            scan_results["os_info"]["type"] = "Unknown"
+
+        # Check for common vulnerabilities
+        vulnerabilities = check_common_vulnerabilities(ip, scan_results["ports"])
+        scan_results["vulnerabilities"] = vulnerabilities
+
+        return jsonify(scan_results)
+    except Exception as e:
+        logging.error(f"Scan failed for target {target}: {str(e)}")
+        return jsonify({
+            "error": str(e),
+            "target": target,
+            "timestamp": datetime.now().isoformat()
+        }), 500
 
 @app.route('/api/ssh-connect', methods=['POST'])
 def api_ssh_connect():
@@ -504,6 +789,41 @@ def api_simulate_attack():
 @app.route('/api/random-attack')
 def api_random_attack():
     return jsonify({"attack_type": get_random_attack()})
+
+@app.route('/api/scan-network', methods=['POST'])
+def api_scan_network():
+    data = request.get_json()
+    network_range = data.get('network_range')
+
+    if not network_range:
+        return jsonify({"error": "No network range specified"}), 400
+
+    create_scan_directory()
+    scan_results = scan_network_range(network_range)
+    return jsonify(scan_results)
+
+@app.route('/api/scan-vulnerabilities', methods=['POST'])
+def api_scan_vulnerabilities():
+    data = request.get_json()
+    target = data.get('target')
+
+    if not target:
+        return jsonify({"error": "No target specified"}), 400
+
+    vuln_results = scan_vulnerabilities(target)
+    return jsonify(vuln_results)
+
+@app.route('/api/generate-report', methods=['POST'])
+def api_generate_report():
+    data = request.get_json()
+    scan_results = data.get('scan_results')
+    vuln_results = data.get('vuln_results')
+
+    if not scan_results or not vuln_results:
+        return jsonify({"error": "Missing scan or vulnerability results"}), 400
+
+    report = generate_scan_report(scan_results, vuln_results)
+    return jsonify(report)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

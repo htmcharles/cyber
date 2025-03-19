@@ -120,3 +120,72 @@
 2025-03-19 13:36:07,896 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:07] "POST /api/simulate-attack HTTP/1.1" 200 -
 2025-03-19 13:36:08,898 - INFO - Completed Ping Flood Attack on 10.12.72.76. Duration: 33.19s
 2025-03-19 13:36:08,899 - INFO - 127.0.0.1 - - [19/Mar/2025 13:36:08] "POST /api/simulate-attack HTTP/1.1" 200 -
+2025-03-19 13:40:10,211 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:40:10,436 - INFO -  * Restarting with stat
+2025-03-19 13:40:11,658 - WARNING -  * Debugger is active!
+2025-03-19 13:40:11,663 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:40:55,196 - INFO - 127.0.0.1 - - [19/Mar/2025 13:40:55] "GET / HTTP/1.1" 200 -
+2025-03-19 13:40:55,698 - INFO - 127.0.0.1 - - [19/Mar/2025 13:40:55] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:41:32,296 - ERROR - Vulnerability scan failed: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 13:41:32,298 - INFO - 127.0.0.1 - - [19/Mar/2025 13:41:32] "POST /api/scan-vulnerabilities HTTP/1.1" 200 -
+2025-03-19 13:41:36,964 - ERROR - Vulnerability scan failed: 'nmap program was not found in path. PATH is : C:\\Program Files\\Python313\\Scripts\\;C:\\Program Files\\Python313\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\Geth;C:\\apache-maven-3.9.9\\bin;C:\\Program Files\\Java\\jdk-21;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Program Files\\nodejs\\;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\charles\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\charles\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\charles\\AppData\\Local\\Programs\\mongosh\\;C:\\Users\\charles\\.dotnet\\tools;C:\\Program Files\\Java\\jdk-21\\bin;C:\\Program Files\\mosquitto;C:\\Users\\charles\\AppData\\Local\\Microsoft\\WinGet\\Links;C:\\Users\\charles\\AppData\\Roaming\\npm;C:\\Users\\charles\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\charles\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin'
+2025-03-19 13:41:36,965 - INFO - 127.0.0.1 - - [19/Mar/2025 13:41:36] "POST /api/scan-vulnerabilities HTTP/1.1" 200 -
+2025-03-19 13:43:14,178 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:43:14,384 - INFO -  * Restarting with stat
+2025-03-19 13:43:15,579 - WARNING -  * Debugger is active!
+2025-03-19 13:43:15,582 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:43:16,838 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:43:16,924 - INFO -  * Restarting with stat
+2025-03-19 13:43:18,114 - WARNING -  * Debugger is active!
+2025-03-19 13:43:18,117 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:43:19,360 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:43:19,449 - INFO -  * Restarting with stat
+2025-03-19 13:43:20,932 - WARNING -  * Debugger is active!
+2025-03-19 13:43:20,937 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:45:56,856 - INFO - 127.0.0.1 - - [19/Mar/2025 13:45:56] "[36mGET / HTTP/1.1[0m" 304 -
+2025-03-19 13:45:56,984 - INFO - 127.0.0.1 - - [19/Mar/2025 13:45:56] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:46:07,559 - INFO - 127.0.0.1 - - [19/Mar/2025 13:46:07] "POST /api/scan-vulnerabilities HTTP/1.1" 200 -
+2025-03-19 13:47:45,856 - INFO - 127.0.0.1 - - [19/Mar/2025 13:47:45] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:47:50,385 - INFO - 127.0.0.1 - - [19/Mar/2025 13:47:50] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:47:51,566 - INFO - 127.0.0.1 - - [19/Mar/2025 13:47:51] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:47:51,788 - INFO - 127.0.0.1 - - [19/Mar/2025 13:47:51] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:48:19,146 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:19] "GET / HTTP/1.1" 200 -
+2025-03-19 13:48:19,322 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:19] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:48:23,783 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:23] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:48:34,685 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:34] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:48:38,915 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:38] "[36mGET / HTTP/1.1[0m" 304 -
+2025-03-19 13:48:39,211 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:39] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:48:46,800 - INFO - 127.0.0.1 - - [19/Mar/2025 13:48:46] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:49:00,103 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:00] "GET /api/local-ip HTTP/1.1" 200 -
+2025-03-19 13:49:06,542 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:06] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:49:16,474 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:16] "[36mGET / HTTP/1.1[0m" 304 -
+2025-03-19 13:49:16,778 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:16] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:49:27,189 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:27] "POST /api/scan-vulnerabilities HTTP/1.1" 200 -
+2025-03-19 13:49:57,986 - INFO - 127.0.0.1 - - [19/Mar/2025 13:49:57] "[35m[1mPOST /api/scan-target HTTP/1.1[0m" 500 -
+2025-03-19 13:52:47,691 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.12.75.194:5000
+2025-03-19 13:52:47,691 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 13:52:47,694 - INFO -  * Restarting with stat
+2025-03-19 13:52:48,761 - WARNING -  * Debugger is active!
+2025-03-19 13:52:48,821 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:52:52,164 - INFO - 127.0.0.1 - - [19/Mar/2025 13:52:52] "GET / HTTP/1.1" 200 -
+2025-03-19 13:52:52,966 - INFO - 127.0.0.1 - - [19/Mar/2025 13:52:52] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:53:15,138 - INFO - 127.0.0.1 - - [19/Mar/2025 13:53:15] "[31m[1mPOST /api/scan-target HTTP/1.1[0m" 400 -
+2025-03-19 13:53:51,893 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:53:52,052 - INFO -  * Restarting with stat
+2025-03-19 13:53:53,512 - WARNING -  * Debugger is active!
+2025-03-19 13:53:53,517 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:54:04,669 - INFO - 127.0.0.1 - - [19/Mar/2025 13:54:04] "[36mGET / HTTP/1.1[0m" 304 -
+2025-03-19 13:54:04,897 - INFO - 127.0.0.1 - - [19/Mar/2025 13:54:04] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:54:40,053 - INFO - 127.0.0.1 - - [19/Mar/2025 13:54:40] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 13:55:52,942 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:55:53,119 - INFO -  * Restarting with stat
+2025-03-19 13:55:54,412 - WARNING -  * Debugger is active!
+2025-03-19 13:55:54,420 - INFO -  * Debugger PIN: 536-982-064
+2025-03-19 13:56:41,700 - INFO - 127.0.0.1 - - [19/Mar/2025 13:56:41] "[36mGET / HTTP/1.1[0m" 304 -
+2025-03-19 13:56:42,025 - INFO - 127.0.0.1 - - [19/Mar/2025 13:56:42] "GET /api/attack-types HTTP/1.1" 200 -
+2025-03-19 13:57:08,648 - INFO - 127.0.0.1 - - [19/Mar/2025 13:57:08] "POST /api/scan-target HTTP/1.1" 200 -
+2025-03-19 13:58:03,131 - INFO -  * Detected change in 'C:\\Projects\\cyber\\index.py', reloading
+2025-03-19 13:58:03,268 - INFO -  * Restarting with stat
