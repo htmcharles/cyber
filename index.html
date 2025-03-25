@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Mapping Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Your existing styles */
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Network Tool</h3>
+            <i class="fas fa-network-wired sidebar-logo"></i>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#system-setup" class="sidebar-menu-item active" onclick="scrollToSection('system-setup')">
+                <i class="fas fa-cogs"></i>
+                <span>System Setup</span>
+            </a>
+            <a href="#network-info" class="sidebar-menu-item" onclick="scrollToSection('network-info')">
+                <i class="fas fa-network-wired"></i>
+                <span>Network Information</span>
+            </a>
+            <a href="#system-info" class="sidebar-menu-item" onclick="scrollToSection('system-info')">
+                <i class="fas fa-desktop"></i>
+                <span>System Information</span>
+            </a>
+            <a href="#advanced-scanning" class="sidebar-menu-item" onclick="scrollToSection('advanced-scanning')">
+                <i class="fas fa-search"></i>
+                <span>Advanced Scanning</span>
+            </a>
+            <a href="#attack-simulation" class="sidebar-menu-item" onclick="scrollToSection('attack-simulation')">
+                <i class="fas fa-shield-virus"></i>
+                <span>Attack Simulation</span>
+            </a>
+            <a href="#network-mapping" class="sidebar-menu-item" onclick="scrollToSection('network-mapping')">
+                <i class="fas fa-network-wired"></i>
+                <span>Network Mapping</span>
+            </a>
+            <a href="#results" class="sidebar-menu-item" onclick="scrollToSection('results')">
+                <i class="fas fa-terminal"></i>
+                <span>Results</span>
+            </a>
+        </div>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar" id="top-bar">
+        <button class="btn btn-outline-primary theme-toggle" onclick="toggleTheme()" data-tooltip="Toggle Theme">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <h1 class="text-center mb-5">Network Mapping Tool</h1>
+
+        <div class="row">
+            <!-- Network Information -->
+            <div id="network-info" class="col-md-6 col-12">
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <h5 class="card-title mb-0 text-white"><i class="fas fa-network-wired me-2"></i>Network Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="getInfo('local-ip')">
+                                <i class="fas fa-laptop me-2"></i>Get Local IP
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('mac-address')">
+                                <i class="fas fa-id-card me-2"></i>Get MAC Address
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('router-details')">
+                                <i class="fas fa-router me-2"></i>Get Router Details
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('isp-info')">
+                                <i class="fas fa-globe me-2"></i>Get ISP Information
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('connected-devices')">
+                                <i class="fas fa-users me-2"></i>Get Connected Devices
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('connection-type')">
+                                <i class="fas fa-wifi me-2"></i>Get Connection Type
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="getInfo('check-anonymity')">
+                                <i class="fas fa-user-secret me-2"></i>Check Anonymity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div id="system-info" class="col-md-6 col-12">
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--success-color), #27ae60);">
+                        <h5 class="card-title mb-0 text-white"><i class="fas fa-desktop me-2"></i>System Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-success" onclick="getInfo('system-info')">
+                                <i class="fas fa-info-circle me-2"></i>Get System Information
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('network-stats')">
+                                <i class="fas fa-chart-line me-2"></i>Get Network Statistics
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('disk-usage')">
+                                <i class="fas fa-hdd me-2"></i>Get Disk Usage
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('cpu-usage')">
+                                <i class="fas fa-microchip me-2"></i>Monitor CPU Usage
+                            </button>
+                            <button class="btn btn-outline-success" onclick="getInfo('auth-logs')">
+                                <i class="fas fa-shield-alt me-2"></i>Parse Authentication Logs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Scanning -->
+        <div id="advanced-scanning" class="card mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--warning-color), #f39c12);">
+                <h5 class="card-title mb-0 text-white"><i class="fas fa-search me-2"></i>Advanced Scanning</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">Target Scan</h6>
+                        <div class="form-group mb-3">
+                            <input type="text" id="scanTarget" class="form-control" placeholder="Enter target IP or domain">
+                        </div>
+                        <button class="btn btn-warning" onclick="scanTarget()">
+                            <i class="fas fa-search me-2"></i>Scan Target
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">SSH Connection</h6>
+                        <div class="form-group">
+                            <input type="text" id="sshHost" class="form-control mb-2" placeholder="Hostname">
+                            <input type="text" id="sshUser" class="form-control mb-2" placeholder="Username">
+                            <input type="password" id="sshPass" class="form-control mb-2" placeholder="Password">
+                            <input type="text" id="sshKey" class="form-control mb-2" placeholder="Key file path (optional)">
+                        </div>
+                        <button class="btn btn-warning" onclick="sshConnect()">
+                            <i class="fas fa-terminal me-2"></i>Connect SSH
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Attack Simulation -->
+        <div id="attack-simulation" class="card mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--danger-color), #c0392b);">
+                <h5 class="card-title mb-0 text-white"><i class="fas fa-shield-virus me-2"></i>Network Attack Simulation</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">Network Discovery</h6>
+                        <button class="btn btn-outline-danger mb-3" onclick="discoverHosts()">
+                            <i class="fas fa-search me-2"></i>Discover Network Hosts
+                        </button>
+                        <div id="hostsList" class="mb-3"></div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">Attack Simulation</h6>
+                        <div class="form-group mb-3">
+                            <label class="mb-2">Select Attack Type:</label>
+                            <select id="attackType" class="form-select mb-2">
+                                <option value="">Choose an attack...</option>
+                            </select>
+                            <button class="btn btn-outline-danger" onclick="getRandomAttack()">
+                                <i class="fas fa-random me-2"></i>Random Attack
+                            </button>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-2">Target IP:</label>
+                            <input type="text" id="targetIp" class="form-control" placeholder="Enter target IP">
+                        </div>
+                        <button class="btn btn-danger" onclick="simulateAttack()">
+                            <i class="fas fa-play me-2"></i>Start Attack
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comprehensive Network Mapping -->
+        <div id="network-mapping" class="card mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #2c3e50, #34495e);">
+                <h5 class="card-title mb-0 text-white"><i class="fas fa-network-wired me-2"></i>Comprehensive Network Mapping</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">Network Range Scan</h6>
+                        <div class="form-group mb-3">
+                            <label class="mb-2">Network Range:</label>
+                            <input type="text" id="networkRange" class="form-control" placeholder="e.g., 192.168.1.0/24">
+                            <small class="text-muted">Enter CIDR notation or IP range</small>
+                        </div>
+                        <button class="btn btn-dark" onclick="scanNetwork()">
+                            <i class="fas fa-search me-2"></i>Scan Network
+                        </button>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <h6 class="mb-3">Vulnerability Assessment</h6>
+                        <div class="form-group mb-3">
+                            <label class="mb-2">Target Host:</label>
+                            <input type="text" id="vulnTarget" class="form-control" placeholder="Enter target IP">
+                        </div>
+                        <button class="btn btn-dark" onclick="scanVulnerabilities()">
+                            <i class="fas fa-shield-virus me-2"></i>Scan Vulnerabilities
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h6 class="mb-3">Scan Results</h6>
+                    <div id="scanResults" class="result-area"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vulnerability Results Section -->
+        <div id="vulnerability-results" class="card mt-4" style="display: none;">
+            <div class="card-header" style="background: linear-gradient(135deg, var(--danger-color), #c0392b);">
+                <h5 class="card-title mb-0 text-white"><i class="fas fa-exclamation-triangle me-2"></i>Vulnerability Findings</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            <h6>Summary</h6>
+                            <p id="vulnSummary"></p>
+                        </div>
+                        <div id="vulnFindings"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results" class="card mt-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #7f8c8d, #95a5a6);">
+                <h5 class="card-title mb-0 text-white"><i class="fas fa-terminal me-2"></i>Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="result" class="result-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Your existing JavaScript
+    </script>
+</body>
+</html>

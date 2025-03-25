@@ -1,0 +1,12 @@
+{
+    "timestamp": "2025-03-25T20:30:32.245101",
+    "target": "10.11.74.190",
+    "findings": [
+        {
+            "tool": "os_detection",
+            "type": "os_info",
+            "os": "Unknown",
+            "description": "Detected OS: Unknown"
+        }
+    ]
+}
